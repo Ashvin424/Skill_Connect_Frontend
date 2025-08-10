@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userProfileImageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/icon_profile"/>
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="username"
+        android:layout_toEndOf="@id/userProfileImageView"/>
+
+    <TextView
+        android:id="@+id/lastMsgTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/usernameTextView"
+        android:layout_marginStart="8dp"
+        android:alpha=".65"
+        android:text="Hello"
+        android:layout_toEndOf="@id/userProfileImageView" />
+
+    <TextView
+        android:id="@+id/timeStampTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/lastMsgTextView"
+        android:layout_marginEnd="8dp"
+        android:layout_alignParentEnd="true"
+        android:text="11:15" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignBottom="@id/userProfileImageView"
+        android:alpha=".25"
+        android:layout_marginTop="8dp"
+        android:background="@color/black"/>
+
+</RelativeLayout>

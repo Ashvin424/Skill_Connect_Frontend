@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/browseNavigation"
+        android:title="Browse"
+        android:icon="@drawable/icon_browse"/>
+    <item
+        android:id="@+id/postNavigation"
+        android:title="Post"
+        android:icon="@drawable/icon_add"/>
+    <item
+        android:id="@+id/messageNavigation"
+        android:title="Messages"
+        android:icon="@drawable/icon_message"/>
+    <item
+        android:id="@+id/profileNavigation"
+        android:title="Profile"
+        android:icon="@drawable/icon_profile"/>
+</menu>

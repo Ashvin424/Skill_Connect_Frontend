@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="hintTextColor">#6A7481</color>
+    <color name="buttonColor">#D8E5EF</color>
+    <color name="navigationIcon">#61758A</color>
+    <color name="teal_200">#bcf5f5</color>
+</resources>
