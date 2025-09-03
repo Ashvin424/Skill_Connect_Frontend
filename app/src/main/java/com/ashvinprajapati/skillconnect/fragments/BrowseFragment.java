@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.activities.ServiceDetailActivity;
 import com.ashvinprajapati.skillconnect.adapters.ServiceAdapter;
@@ -42,8 +43,8 @@ import retrofit2.Response;
 public class BrowseFragment extends Fragment {
     private RecyclerView recyclerView;
     private ServiceAdapter adapter;
-    private ProgressBar progressBar;
     private Spinner spinner;
+    private LottieAnimationView loadingAnim;
     private EditText searchEditText;
     private ImageButton searchBtn;
 
@@ -68,10 +69,10 @@ public class BrowseFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_browse, container, false);
-        progressBar = view.findViewById(R.id.progressBar);
         recyclerView = view.findViewById(R.id.recyclerViewServices);
         spinner = view.findViewById(R.id.searchBySpinner);
         searchEditText = view.findViewById(R.id.searchEditText);
+        loadingAnim = view.findViewById(R.id.loadingAnim);
         searchBtn = view.findViewById(R.id.searchBtn);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         loadServices();
@@ -130,7 +131,8 @@ public class BrowseFragment extends Fragment {
     }
 
     private void loadServices() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadingAnim.setVisibility(View.VISIBLE);
+        loadingAnim.playAnimation();
 
 
         TokenManager tokenManager = new TokenManager(requireContext());
@@ -141,7 +143,8 @@ public class BrowseFragment extends Fragment {
         servicesApiService.getAllServices().enqueue(new Callback<List<Service>>() {
             @Override
             public void onResponse(Call<List<Service>> call, Response<List<Service>> response) {
-                progressBar.setVisibility(View.GONE);
+                loadingAnim.setVisibility(View.GONE);
+                loadingAnim.pauseAnimation();
                 if (response.isSuccessful() && response.body() != null) {
                     adapter = new ServiceAdapter(response.body(), new ServiceAdapter.OnServiceClickListener() {
                         @Override

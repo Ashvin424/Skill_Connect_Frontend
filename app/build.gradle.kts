@@ -45,6 +45,7 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation(libs.firebase.analytics)
+    implementation (libs.lottie)
     implementation (libs.firebase.messaging)
     implementation(platform(libs.firebase.bom))
     implementation (libs.okhttp3.logging.interceptor)

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginTop="8dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/reviewerProfileImage"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:contentDescription="ProfileImage"
+        android:src="@drawable/icon_profile" />
+
+    <TextView
+        android:id="@+id/reviewerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/reviewerProfileImage"
+        android:text="Reviewer Name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/ratingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reviewerName"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/reviewerProfileImage"
+        android:drawableRight="@drawable/icon_star"
+        android:text="5"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/createdAtTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/reviewerProfileImage"
+        android:layout_marginStart="16dp"
+        android:alpha="0.75"
+        android:text="Rated on 19/04/2005"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/commentTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createdAtTextView"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:lineBreakStyle="strict"
+        android:text="This provider is great i like they handle problems with my computer"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:alpha=".5"
+        android:layout_below="@+id/commentTextView"
+        android:background="@color/black"/>
+
+
+</RelativeLayout>

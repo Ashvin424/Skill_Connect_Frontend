@@ -2,11 +2,14 @@ package com.ashvinprajapati.skillconnect.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,22 +19,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashvinprajapati.skillconnect.R;
+import com.ashvinprajapati.skillconnect.activities.BookingsActivity;
 import com.ashvinprajapati.skillconnect.activities.LoginActivity;
 import com.ashvinprajapati.skillconnect.activities.MainActivity;
+import com.ashvinprajapati.skillconnect.activities.RatingsForCurrentUserActivity;
 import com.ashvinprajapati.skillconnect.activities.ServiceDetailActivity;
+import com.ashvinprajapati.skillconnect.activities.SettingsActivity;
 import com.ashvinprajapati.skillconnect.adapters.ProfileServiceAdapter;
 import com.ashvinprajapati.skillconnect.models.ProfileResponse;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
+import com.ashvinprajapati.skillconnect.networks.AuthApiService;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.time.LocalDateTime;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -44,11 +56,12 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
-    private TextView fullNameTextView, usernameTextView, userCreatedAtTextView,skillCountTextView, serviceCountTextView, reviewCountTextView, bioTextView, userRatingTextView;
+    private TextView fullNameTextView, usernameTextView, userCreatedAtTextView,skillCountTextView, serviceCountTextView, reviewCountTextView, bioTextView, userRatingTextView, bookingsTextview;
     private CircleImageView userProfileImageView;
+    private ImageButton settingBtn;
     private ChipGroup chipGroupSkills;
+    private CardView ratingsCardView;
     private RecyclerView recyclerViewServices;
-    private Button logoutButton;
     private ProgressBar progressBar;
     private ProfileServiceAdapter adapter;
 
@@ -105,16 +118,32 @@ public class ProfileFragment extends Fragment {
         recyclerViewServices = view.findViewById(R.id.recyclerViewServices);
         skillCountTextView = view.findViewById(R.id.skillCountTextView);
         serviceCountTextView = view.findViewById(R.id.serviceCountTextView);
-        logoutButton = view.findViewById(R.id.btnLogout);
+        bookingsTextview = view.findViewById(R.id.bookingsTextview);
+        settingBtn = view.findViewById(R.id.settingBtn);
+        ratingsCardView = view.findViewById(R.id.ratingsCardView);
         reviewCountTextView = view.findViewById(R.id.reviewCountTextView);
         bioTextView = view.findViewById(R.id.bioTextView);
         userRatingTextView = view.findViewById(R.id.userRatingTextView);
         progressBar = view.findViewById(R.id.progressBar);
 
         recyclerViewServices.setLayoutManager(new LinearLayoutManager(requireContext()));
+        bookingsTextview.setOnClickListener(v -> navigateBooking() );
+        settingBtn.setOnClickListener(v -> gotoSetting());
+        ratingsCardView.setOnClickListener(v -> startActivity(new Intent(requireContext(), RatingsForCurrentUserActivity.class)));
 
         loadProfile();
         return view;
+    }
+
+
+    private void gotoSetting() {
+        startActivity(new Intent(getContext(), SettingsActivity.class));
+    }
+
+
+    private void navigateBooking() {
+        Intent intent = new Intent(getActivity(), BookingsActivity.class);
+        startActivity(intent);
     }
 
 
@@ -132,16 +161,22 @@ public class ProfileFragment extends Fragment {
                     ProfileResponse profileResponse = response.body();
                     fullNameTextView.setText(profileResponse.getName());
                     usernameTextView.setText(profileResponse.getDisplayUsername());
-                    Log.d("ProfileFragment", "Services count: " + profileResponse.getServices().size());
-                    Log.d("ProfileFragment", "Display Username: " + (profileResponse.getDisplayUsername() != null ? profileResponse.getDisplayUsername() : "null"));
+//                    Log.d("ProfileFragment", "Services count: " + profileResponse.getServices().size());
+//                    Log.d("ProfileFragment", "Display Username: " + (profileResponse.getDisplayUsername() != null ? profileResponse.getDisplayUsername() : "null"));
                     if (profileResponse.getCreatedAt() != null) {
-                        userCreatedAtTextView.setText("Joined " + profileResponse.getCreatedAt());
+                        String date = profileResponse.getCreatedAt();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            userCreatedAtTextView.setText("Joined in " + String.valueOf(LocalDateTime.parse(date).getYear()));
+                        }else {
+                            userCreatedAtTextView.setText(profileResponse.getCreatedAt());
+                        }
+
                     } else {
                         userCreatedAtTextView.setText("Joined 20XX");
                     }
                     skillCountTextView.setText(String.valueOf(profileResponse.getSkillCount()));
                     serviceCountTextView.setText(String.valueOf(profileResponse.getServiceCount()));
-                    reviewCountTextView.setText(String.valueOf(profileResponse.getReviewCount()));
+                    reviewCountTextView.setText("("+String.valueOf(profileResponse.getReviewCount())+")");
                     bioTextView.setText(profileResponse.getBio());
                     userRatingTextView.setText(String.valueOf(profileResponse.getAverageRating()));
                     String skills = profileResponse.getSkills();
@@ -165,6 +200,7 @@ public class ProfileFragment extends Fragment {
                     adapter = new ProfileServiceAdapter(profileResponse.getServices(), service -> {
                         Intent intent = new Intent(getActivity(), ServiceDetailActivity.class);
                         intent.putExtra("serviceId", service.getId());
+                        intent.putExtra("userId", Long.parseLong(getCurrentUserId()));
                         startActivity(intent);
                     });
                     recyclerViewServices.setAdapter(adapter);
@@ -179,5 +215,10 @@ public class ProfileFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
             }
         });
+
+    }
+    private String getCurrentUserId() {
+        SharedPreferences prefs = getContext().getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("currentUserId", null);
     }
 }

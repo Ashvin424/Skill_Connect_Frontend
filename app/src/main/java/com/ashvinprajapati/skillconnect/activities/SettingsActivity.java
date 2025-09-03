@@ -1,6 +1,9 @@
 package com.ashvinprajapati.skillconnect.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -12,7 +15,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.ashvinprajapati.skillconnect.R;
+import com.ashvinprajapati.skillconnect.networks.ApiClient;
+import com.ashvinprajapati.skillconnect.networks.AuthApiService;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -39,13 +49,13 @@ public class SettingsActivity extends AppCompatActivity {
         //Toolbar Navigation Icon Click Listener
         toolbar.setNavigationOnClickListener(view -> {
             Toast.makeText(this, "Back to Profile Page", Toast.LENGTH_SHORT).show();
-            //TODO : Navigate to Profile Page
+            finish();
         });
 
         //editProfileLayout Click Listener
         editProfileLayout.setOnClickListener(v->{
             Toast.makeText(this, "Edit Profile", Toast.LENGTH_SHORT).show();
-            //TODO : Navigate to Edit Profile Page
+            startActivity(new Intent(SettingsActivity.this, EditProfileActivity.class));
         });
 
         //passwordChangeLayout Click Listener
@@ -69,8 +79,53 @@ public class SettingsActivity extends AppCompatActivity {
         //logoutBtn Click Listener
         logoutBtn.setOnClickListener(v->{
             Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
-            //TODO : Navigate to Login Page
+            logout();
         });
+    }
+
+    private void logout() {
+        SharedPreferences prefs = getSharedPreferences("SkillConnectPrefs", MODE_PRIVATE);
+        String email = prefs.getString("email", null);
+        if (email == null){
+            Toast.makeText(this, "Please Login First", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AuthApiService authApiService = ApiClient.getClient(this).create(AuthApiService.class);
+        authApiService.logout(email).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()){
+                    SharedPreferences preferences1 = getSharedPreferences("SkillConnectPrefs", MODE_PRIVATE);
+                    preferences1.edit().clear().apply();
+
+                    SharedPreferences preferences2 = getSharedPreferences("MY_APP_PREF", MODE_PRIVATE);
+                    preferences2.edit().clear().apply();
+
+                    // 4. Clear FCM token
+                    FirebaseMessaging.getInstance().deleteToken()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Log.d("Logout", "FCM token deleted successfully");
+                                } else {
+                                    Log.e("Logout", "Failed to delete FCM token", task.getException());
+                                }
+                            });
+
+                    // 5. Navigate to Login screen & clear back stack
+                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(SettingsActivity.this, "Logout failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Logout Error", "Failed to logout: " + t.getMessage(), t);
+            }
+        });
+
     }
 
     public void init(){

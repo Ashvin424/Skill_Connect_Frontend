@@ -1,5 +1,6 @@
 package com.ashvinprajapati.skillconnect.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -76,13 +77,17 @@ public class ServiceDetailActivity extends AppCompatActivity {
             });
         }
 
-        bookServiceButton.setOnClickListener(v -> {
-            bookService();
-        });
+        // OnClick Listeners
+        bookServiceButton.setOnClickListener(v -> bookService());
+        toolbar.setNavigationOnClickListener(v -> finish());
+        serviceProviderCardView.setOnClickListener(v -> gotoOtherUserProfile());
+    }
 
-        toolbar.setNavigationOnClickListener(v -> {
-            finish();
-        });
+    private void gotoOtherUserProfile() {
+        Long userId = getIntent().getLongExtra("userId", -1L);
+        Intent intent = new Intent(this, OtherUserProfileActivity.class);
+        intent.putExtra("userId", userId);
+        startActivity(intent);
     }
 
     private void bindServiceDetails(Service service) {

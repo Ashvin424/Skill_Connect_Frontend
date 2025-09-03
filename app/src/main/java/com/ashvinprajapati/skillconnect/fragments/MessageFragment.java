@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.adapters.ChatsAdapter;
 import com.ashvinprajapati.skillconnect.models.Chat;
+import com.ashvinprajapati.skillconnect.models.ProfileResponse;
 import com.ashvinprajapati.skillconnect.models.User;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
@@ -106,9 +107,9 @@ public class MessageFragment extends Fragment {
                                       String otherUserId = extractOtherUserId(chatId, currentUserId);
                                       Long userId = Long.parseLong(otherUserId);
                                       UserApiService userApiService = ApiClient.getClient(getContext()).create(UserApiService.class);
-                                      userApiService.getUserById(userId).enqueue(new Callback<User>() {
+                                      userApiService.getUserById(userId).enqueue(new Callback<ProfileResponse>() {
                                           @Override
-                                          public void onResponse(Call<User> call, Response<User> response) {
+                                          public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                                               if (response.isSuccessful()) {
                                                   Chat chat = new Chat(chatId, message, response.body().getName(),
                                                           response.body().getProfileImageUrl(), participants, timeStamp);
@@ -130,7 +131,7 @@ public class MessageFragment extends Fragment {
                                           }
 
                                           @Override
-                                          public void onFailure(Call<User> call, Throwable t) {
+                                          public void onFailure(Call<ProfileResponse> call, Throwable t) {
                                               Log.e("API", "Failed to fetch user info", t);
                                           }
                                       });
