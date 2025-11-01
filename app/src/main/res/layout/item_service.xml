@@ -12,42 +12,37 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         app:cardElevation="4dp"
+
         app:cardCornerRadius="12dp">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="vertical"
-                android:layout_margin="8dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/textTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Service Title" />
-
-                <TextView
-                    android:id="@+id/textPostedBy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Posted By" />
-            </LinearLayout>
-
+            android:orientation="vertical">
             <ImageView
                 android:id="@+id/imageService"
-                android:layout_width="100dp"
-                android:layout_height="75dp"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
                 android:layout_margin="8dp"
                 android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:text="Service Title" />
+
+            <TextView
+                android:id="@+id/textPostedBy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Posted By" />
+
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.fragments.BrowseFragment;
@@ -45,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView titleTextView;
     private FrameLayout frameLayout;
     private BottomNavigationView bottomNavigationView;
+
+    Fragment browseFragment = new BrowseFragment();
+    Fragment postFragment = new PostServiceFragment();
+    Fragment messageFragment = new MessageFragment();
+    Fragment profileFragment = new ProfileFragment();
+
+    Fragment active = browseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,14 +104,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
         String email = getIntent().getStringExtra("email");
         if (email != null) {
             FirebaseMessaging.getInstance().getToken()
@@ -129,46 +130,53 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
 
+
+
         init();
-        setDefaultFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frameLayout, profileFragment, "4").hide(profileFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frameLayout, messageFragment, "3").hide(messageFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frameLayout, postFragment, "2").hide(postFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frameLayout, browseFragment, "1").commit();
+
+        titleTextView.setText("Browse");
+        active = browseFragment;
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
 
             if (item.getItemId() == R.id.browseNavigation) {
                 titleTextView.setText("Browse");
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, new BrowseFragment())
-                        .commit();
-            }
-            if (item.getItemId() == R.id.postNavigation) {
+                fragment = new BrowseFragment();
+            } else if (item.getItemId() == R.id.postNavigation) {
                 titleTextView.setText("Post Service");
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, new PostServiceFragment())
-                        .commit();
-            }
-            if (item.getItemId() == R.id.messageNavigation) {
+                fragment = new PostServiceFragment();
+            } else if (item.getItemId() == R.id.messageNavigation) {
                 titleTextView.setText("Message");
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, new MessageFragment())
-                        .commit();
-            }
-            if (item.getItemId() == R.id.profileNavigation) {
+                fragment = new MessageFragment();
+            } else if (item.getItemId() == R.id.profileNavigation) {
                 titleTextView.setText("Profile");
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, new ProfileFragment())
-                        .commit();
+                fragment = new ProfileFragment();
             }
 
+            if (fragment != null) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frameLayout, fragment)
+                        .commitAllowingStateLoss();
+            }
 
             return true;
         });
+
+
+
     }
 
-    private void setDefaultFragment() {
-        titleTextView.setText("Browse");
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frameLayout, new BrowseFragment())
-                .commit();
-    }
 
     public void init() {
         toolbar = findViewById(R.id.toolbar);

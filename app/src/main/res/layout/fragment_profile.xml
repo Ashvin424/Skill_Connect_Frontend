@@ -234,6 +234,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"/>
+            <include layout="@layout/no_internet_layout"/>
+            <include layout="@layout/empty_state_layout"/>
 
         </LinearLayout>
     </ScrollView>

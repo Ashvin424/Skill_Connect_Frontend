@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashvinprajapati.skillconnect.R;
@@ -28,96 +31,94 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ServiceBookingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ServiceBookingsFragment extends Fragment {
+
     private RecyclerView bookingsRV;
-    private ServiceBookingShowAdapter ServiceBookingShowAdapter;
+    private ServiceBookingShowAdapter serviceBookingShowAdapter;
     private List<BookingResponse> bookingsList = new ArrayList<>();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private View noInternetLayout;
+    private Button btnRetry;
+    private TextView noDataText;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ServiceBookingsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ServiceBookingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ServiceBookingsFragment newInstance(String param1, String param2) {
-        ServiceBookingsFragment fragment = new ServiceBookingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public ServiceBookingsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_service_bookings, container, false);
-        // Inflate the layout for this fragment
-        bookingsRV = view.findViewById(R.id.bookingsRV);
-        bookingsRV.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ServiceBookingShowAdapter = new ServiceBookingShowAdapter(getContext(), bookingsList);
-        bookingsRV.setAdapter(ServiceBookingShowAdapter);
+        bookingsRV = view.findViewById(R.id.bookingsRV);
+        noInternetLayout = view.findViewById(R.id.noInternetLayout);
+        btnRetry = view.findViewById(R.id.btnRetry);
+        noDataText = view.findViewById(R.id.noDataText);
+
+        bookingsRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        serviceBookingShowAdapter = new ServiceBookingShowAdapter(getContext(), bookingsList);
+        bookingsRV.setAdapter(serviceBookingShowAdapter);
+
+        btnRetry.setOnClickListener(v -> fetchBookings());
+
         fetchBookings();
         return view;
     }
 
     private void fetchBookings() {
+
         long currentUserId = Long.parseLong(getCurrentUserId());
-        Toast.makeText(getContext(), "Current User ID: " + currentUserId, Toast.LENGTH_SHORT).show();
-
         BookingApiService bookingApiService = ApiClient.getClient(getContext()).create(BookingApiService.class);
-        bookingApiService.getBookingsByProvider(currentUserId, 0, 10).enqueue(new Callback<PagedResponse<BookingResponse>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<BookingResponse>> call, Response<PagedResponse<BookingResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<BookingResponse> bookings = response.body().getContent();
-                    ServiceBookingShowAdapter.updateData(bookings);
-                }else {
-                    Toast.makeText(getContext(), "Failed to fetch bookings", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<PagedResponse<BookingResponse>> call, Throwable t) {
-                Log.e("BookingActivity", "Error fetching bookings", t);
-                Toast.makeText(getContext(), "Failed to fetch bookings", Toast.LENGTH_SHORT).show();
-            }
-        });
+        bookingApiService.getBookingsByProvider(currentUserId, 0, 10)
+                .enqueue(new Callback<PagedResponse<BookingResponse>>() {
+                    @Override
+                    public void onResponse(Call<PagedResponse<BookingResponse>> call, Response<PagedResponse<BookingResponse>> response) {
+                        if (!isAdded()) return;
+
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<BookingResponse> bookings = response.body().getContent();
+
+                            if (bookings.isEmpty()) {
+                                showNoDataUI();
+                            } else {
+                                showDataUI();
+                                serviceBookingShowAdapter.updateData(bookings);
+                            }
+                        } else {
+                            showNoInternetUI();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PagedResponse<BookingResponse>> call, Throwable t) {
+                        if (!isAdded()) return;
+                        Log.e("ServiceBookings", "Error fetching", t);
+                        showNoInternetUI();
+                    }
+                });
     }
 
     private String getCurrentUserId() {
         SharedPreferences prefs = getContext().getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);
         return prefs.getString("currentUserId", null);
+    }
+
+
+
+    private void showNoInternetUI() {
+        noInternetLayout.setVisibility(View.VISIBLE);
+        noDataText.setVisibility(View.GONE);
+        bookingsRV.setVisibility(View.GONE);
+    }
+
+    private void showNoDataUI() {
+        noDataText.setVisibility(View.VISIBLE);
+        noInternetLayout.setVisibility(View.GONE);
+        bookingsRV.setVisibility(View.GONE);
+    }
+
+    private void showDataUI() {
+        bookingsRV.setVisibility(View.VISIBLE);
+        noInternetLayout.setVisibility(View.GONE);
+        noDataText.setVisibility(View.GONE);
     }
 }

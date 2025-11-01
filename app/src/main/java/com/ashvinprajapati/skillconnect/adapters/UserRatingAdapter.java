@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserRatingAdapter extends RecyclerView.Adapter<UserRatingAdapter.RatingViewHolder> {
     private Context context;
     private List<RatingResponse> ratingsList = new ArrayList<>();
@@ -44,9 +46,9 @@ public class UserRatingAdapter extends RecyclerView.Adapter<UserRatingAdapter.Ra
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDateTime dateTime = LocalDateTime.parse(rating.getCreatedAt());
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
             String formatted = dateTime.format(formatter);
-            holder.createdAtTextView.setText("Rated on "+formatted);
+            holder.createdAtTextView.setText(formatted);
         }
         else {
             holder.createdAtTextView.setText(rating.getCreatedAt());
@@ -76,7 +78,7 @@ public class UserRatingAdapter extends RecyclerView.Adapter<UserRatingAdapter.Ra
     }
 
     static class RatingViewHolder extends RecyclerView.ViewHolder {
-        ImageView reviewerProfileImage;
+        CircleImageView reviewerProfileImage;
         TextView reviewerName, ratingTextView, createdAtTextView, commentTextView;
 
         public RatingViewHolder(@NonNull View itemView) {

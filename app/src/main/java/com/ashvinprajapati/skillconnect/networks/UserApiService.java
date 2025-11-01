@@ -1,5 +1,6 @@
 package com.ashvinprajapati.skillconnect.networks;
 
+import com.ashvinprajapati.skillconnect.models.ChangePasswordDTO;
 import com.ashvinprajapati.skillconnect.models.FcmTokenRequest;
 import com.ashvinprajapati.skillconnect.models.ProfileImageUploadResponseDTO;
 import com.ashvinprajapati.skillconnect.models.ProfileResponse;
@@ -41,6 +42,12 @@ public interface UserApiService {
     @POST("users/profile/upload-image")
     Call<ProfileImageUploadResponseDTO> uploadProfileImage(
             @Part MultipartBody.Part file,
+            @Header("Authorization") String token
+    );
+
+    @PUT("users/change-password")
+    Call<ChangePasswordDTO> changePassword(
+            @Body ChangePasswordDTO changePasswordDTO,
             @Header("Authorization") String token
     );
 }

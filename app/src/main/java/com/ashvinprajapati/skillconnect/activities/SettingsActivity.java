@@ -62,17 +62,18 @@ public class SettingsActivity extends AppCompatActivity {
         passwordChangeLayout.setOnClickListener(v->{
             Toast.makeText(this, "Change Password", Toast.LENGTH_SHORT).show();
             //TODO : Navigate to Change Password Page
+            startActivity(new Intent(SettingsActivity.this, PasswordChangeActivity.class));
         });
 
         //appSettingLayout Click Listener
         appSettingLayout.setOnClickListener(v->{
-            Toast.makeText(this, "App Settings", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "App Setting Coming Soon", Toast.LENGTH_SHORT).show();
             //TODO : Navigate to App Settings Page
         });
 
         //supportLayout Click Listener
         supportLayout.setOnClickListener(v->{
-            Toast.makeText(this, "Help & Support", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Help & Support Coming Soon", Toast.LENGTH_SHORT).show();
             //TODO : Navigate to Help & Support Page
         });
 

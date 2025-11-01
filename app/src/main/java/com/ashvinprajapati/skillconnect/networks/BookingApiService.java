@@ -11,6 +11,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -37,12 +38,14 @@ public interface BookingApiService {
     Call<PagedResponse<BookingResponse>> getBookingsByRequester(
             @Path("userId") Long userId,
             @Query("page") int page,
-            @Query("size") int size
+            @Query("size") int size,
+            @Header("Authorization") String token
     );
 
     @PUT("bookings/{id}")
     Call<Booking> updateBookingStatus(
             @Path("id") Long bookingId,
-            @Body BookingStatusUpdateRequest request
+            @Body BookingStatusUpdateRequest request,
+            @Header("Authorization") String token
     );
 }

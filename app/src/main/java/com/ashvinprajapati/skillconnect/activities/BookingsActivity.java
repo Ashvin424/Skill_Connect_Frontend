@@ -46,7 +46,7 @@ public class BookingsActivity extends AppCompatActivity {
                     if (position == 0) {
                         tab.setText("My Bookings");
                     } else {
-                        tab.setText("Service Bookings");
+                        tab.setText("Booking Requests");
                     }
                 }
         ).attach();

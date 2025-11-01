@@ -112,10 +112,18 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onResponse(Call<ProfileImageUploadResponseDTO> call, Response<ProfileImageUploadResponseDTO> response) {
                 if (response.isSuccessful()){
                     Toast.makeText(EditProfileActivity.this, "Image Upload Successfully",Toast.LENGTH_SHORT).show();
+                    ProfileImageUploadResponseDTO profileImageUploadResponseDTO = response.body();
+                    updateUserDTO.setProfileImageUrl(profileImageUploadResponseDTO.getProfileImageUrl());
                     updateProfile(updateUserDTO, tokenManager.getToken());
                 }
                 else {
-                    Toast.makeText(EditProfileActivity.this, response.errorBody().toString(), Toast.LENGTH_SHORT).show();
+                    if (response.code() == 413) {
+                        // Check for 413 "Payload Too Large"
+                        Toast.makeText(EditProfileActivity.this, "Image file too large. Please select image smaller than 1MB.", Toast.LENGTH_LONG).show();
+                    } else {
+                        // Handle any other HTTP error
+                        Toast.makeText(EditProfileActivity.this, "Upload failed: " + response.message(), Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 

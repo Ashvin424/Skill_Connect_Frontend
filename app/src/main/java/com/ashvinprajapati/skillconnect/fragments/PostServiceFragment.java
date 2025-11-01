@@ -55,7 +55,7 @@ public class PostServiceFragment extends Fragment {
     private RecyclerView imageRecyclerView;
     private MaterialButton postServiceBtn;
     private SelectImageAdapter imageAdapter;
-    private List<Uri> imageUris = new ArrayList<>();
+    private List<String> imageUris = new ArrayList<>();
     private List<String> uploadedImageUrls = new ArrayList<>();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -114,7 +114,7 @@ public class PostServiceFragment extends Fragment {
 
 
         uploadImageBtn.setOnClickListener(v->{
-           selectImage(); 
+           selectImage();
         });
         postServiceBtn.setOnClickListener(v -> createService());
 
@@ -140,11 +140,11 @@ public class PostServiceFragment extends Fragment {
                 int count = data.getClipData().getItemCount();
                 for(int i = 0; i < count; i++){
                     Uri imageUri = data.getClipData().getItemAt(i).getUri();    // Get the URI of the selected image
-                    imageUris.add(imageUri);    // Add the URI to the list
+                    imageUris.add(imageUri.toString());    // Add the URI to the list
                 }
             } else if (data.getData() != null){ // That means only one image is selected
                 Uri imageUri = data.getData();
-                imageUris.add(imageUri);
+                imageUris.add(imageUri.toString());
             }
             imageAdapter.notifyDataSetChanged();
             imageRecyclerView.setVisibility(View.VISIBLE);
@@ -164,6 +164,7 @@ public class PostServiceFragment extends Fragment {
         apiService.createService(service).enqueue(new Callback<Service>() {
             @Override
             public void onResponse(Call<Service> call, Response<Service> response) {
+                if (!isAdded()) return; // Fragment not visible, ignore response
                 if (response.isSuccessful() && response.body() != null) {
                     Long serviceId = response.body().getId();
                     TokenManager tokenManager = new TokenManager(requireContext());
@@ -176,6 +177,7 @@ public class PostServiceFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Service> call, Throwable t) {
+                if (!isAdded()) return; // Fragment not visible, ignore response
                 Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -184,8 +186,8 @@ public class PostServiceFragment extends Fragment {
     private void uploadImages(Long serviceId) {
         List<MultipartBody.Part> imageParts = new ArrayList<>();
 
-        for (Uri uri : imageUris) {
-            File file = UriToFileUtil.getFileFromUri(requireContext(), uri);
+        for (String uri : imageUris) {
+            File file = UriToFileUtil.getFileFromUri(requireContext(), Uri.parse(uri));
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part part = MultipartBody.Part.createFormData("files", file.getName(), requestBody);
             imageParts.add(part);
@@ -199,6 +201,7 @@ public class PostServiceFragment extends Fragment {
         servicesApiService.uploadServiceImages(serviceId, imageParts).enqueue(new Callback<ImageUploadResponse>() {
             @Override
             public void onResponse(Call<ImageUploadResponse> call, Response<ImageUploadResponse> response) {
+                if (!isAdded()) return; // Fragment not visible, ignore response
                 if (response.isSuccessful() && response.body() != null) {
                     uploadedImageUrls = response.body().getImageUrls();
                     Toast.makeText(requireContext(), "Service Posted Successfully", Toast.LENGTH_SHORT).show();
@@ -211,6 +214,7 @@ public class PostServiceFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ImageUploadResponse> call, Throwable t) {
+                if (!isAdded()) return; // Fragment not visible, ignore response
                 Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

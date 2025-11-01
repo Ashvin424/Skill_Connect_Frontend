@@ -48,14 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         init();
 
         toolbar.setNavigationOnClickListener(v -> {
@@ -71,7 +64,9 @@ public class ChatActivity extends AppCompatActivity {
 
         // Setup RecyclerView
         messageAdapter = new MessageAdapter(messagesList, currentUserId);
-        chatsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        chatsRecyclerView.setLayoutManager(layoutManager);
         chatsRecyclerView.setAdapter(messageAdapter);
 
         // Load messages

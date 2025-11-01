@@ -10,6 +10,9 @@ public class TokenManager {
     private SharedPreferences prefs;
 
     public TokenManager(Context context) {
+        if (context == null) {
+            context = MyApp.getInstance().getApplicationContext();
+        }
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 

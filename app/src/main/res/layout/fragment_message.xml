@@ -18,5 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />
+    <include layout="@layout/no_internet_layout"/>
+    <include layout="@layout/empty_state_layout"/>
 
 </FrameLayout>

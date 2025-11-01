@@ -58,8 +58,11 @@
                 android:id="@+id/recyclerViewServices"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </LinearLayout>
 
     </ScrollView>
 
+    <include layout="@layout/no_internet_layout"/>
+    <include layout="@layout/empty_state_layout"/>
 </FrameLayout>

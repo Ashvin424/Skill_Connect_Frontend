@@ -15,9 +15,9 @@ import com.ashvinprajapati.skillconnect.R;
 import java.util.List;
 
 public class SelectImageAdapter extends RecyclerView.Adapter<SelectImageAdapter.ViewHolder>{
-    private List<Uri> imageUris;
+    private List<String> imageUris;
     private Context context;
-    public SelectImageAdapter(List<Uri> imageUris, Context context) {
+    public SelectImageAdapter(List<String> imageUris, Context context) {
         this.imageUris = imageUris;
         this.context = context;
     }
@@ -32,7 +32,7 @@ public class SelectImageAdapter extends RecyclerView.Adapter<SelectImageAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SelectImageAdapter.ViewHolder holder, int position) {
-        holder.imagePreview.setImageURI(imageUris.get(position));
+        holder.imagePreview.setImageURI(Uri.parse(imageUris.get(position)));
 
     }
 

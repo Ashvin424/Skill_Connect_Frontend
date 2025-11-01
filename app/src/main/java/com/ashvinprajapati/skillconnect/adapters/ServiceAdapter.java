@@ -40,7 +40,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     @Override
     public void onBindViewHolder(@NonNull ServiceAdapter.ServiceViewHolder holder, int position) {
         Service service = serviceList.get(position);
-        holder.textTitle.setText(service.getTitle());
+        holder.textTitle.setText("Service: "+service.getTitle());
         if (service.getUsername() != null) {
             holder.textPostedBy.setText("Posted By "+service.getUsername());
         } else {

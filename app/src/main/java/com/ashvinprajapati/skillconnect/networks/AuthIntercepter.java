@@ -2,6 +2,8 @@ package com.ashvinprajapati.skillconnect.networks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -44,7 +46,13 @@ public class AuthIntercepter implements Interceptor {
         }
         if (!response.isSuccessful()) {
             if (response.code() == 413) {
-                Toast.makeText(context, "Image file too large. Please select smaller images.", Toast.LENGTH_SHORT).show();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // This code runs on the main (UI) thread
+                        Toast.makeText(context, "Image file too large...", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
         return response;

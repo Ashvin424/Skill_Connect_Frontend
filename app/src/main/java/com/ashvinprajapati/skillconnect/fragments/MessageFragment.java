@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.util.Printer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.ashvinprajapati.skillconnect.R;
@@ -22,6 +23,7 @@ import com.ashvinprajapati.skillconnect.models.ProfileResponse;
 import com.ashvinprajapati.skillconnect.models.User;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
+import com.ashvinprajapati.skillconnect.utils.NetworkUtils;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,112 +36,134 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MessageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MessageFragment extends Fragment {
+
     private RecyclerView chatRecyclerView;
     private ChatsAdapter chatsAdapter;
     private List<Chat> chatList = new ArrayList<>();
+
     private ProgressBar progressBar;
+    private View noInternetLayout, emptyStateLayout;
+    private Button btnRetry;
 
     private FirebaseFirestore db;
     private String currentUserId;
 
-    public MessageFragment() {
-        // Required empty public constructor
-    }
-    public static MessageFragment newInstance(String param1, String param2) {
-        MessageFragment fragment = new MessageFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_message, container, false);
+
         chatRecyclerView = view.findViewById(R.id.chatsRecyclerView);
         progressBar = view.findViewById(R.id.progressBar);
-        chatsAdapter = new ChatsAdapter(requireContext(),chatList);
+        noInternetLayout = view.findViewById(R.id.noInternetLayout);
+        emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
+        btnRetry = view.findViewById(R.id.btnRetry);
+
+        chatRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        chatsAdapter = new ChatsAdapter(requireContext(), chatList);
         chatRecyclerView.setAdapter(chatsAdapter);
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         db = FirebaseFirestore.getInstance();
         currentUserId = getCurrentUserId();
-        fetchChats();
+
+        btnRetry.setOnClickListener(v -> loadChats());
+
+        loadChats();
+
         return view;
     }
 
+    private void loadChats() {
+        // Internet check
+        if (!NetworkUtils.isConnected(requireContext())) {
+            showNoInternet();
+            return;
+        }
+
+        showLoading();
+        fetchChats();
+    }
+
     private void fetchChats() {
-        progressBar.setVisibility(View.VISIBLE);
-        Log.d("FIREBASE", "Current User ID: " + currentUserId);
         chatList.clear();
+
         db.collection("chats")
                 .whereArrayContains("participants", currentUserId)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                  for (DocumentSnapshot doc : querySnapshot.getDocuments()){
-                      String chatId = doc.getId();
-                      List<String> participants = (List<String>) doc.get("participants");
-                      doc.getReference().collection("messages")
-                              .orderBy("timestamp", Query.Direction.DESCENDING)
-                              .limit(1)
-                              .addSnapshotListener((messageSnapshot, e) -> {
-                                  if (e != null) {
-                                      Log.e("FIREBASE", "Listen failed", e);
-                                      return;
-                                  }
-                                  progressBar.setVisibility(View.GONE);
-                                  if (messageSnapshot != null && !messageSnapshot.isEmpty()) {
-                                      DocumentSnapshot lastMessage = messageSnapshot.getDocuments().get(0);
-                                      String message = lastMessage.getString("message");
-                                      Timestamp timeStamp = lastMessage.getTimestamp("timestamp");
 
-                                      String otherUserId = extractOtherUserId(chatId, currentUserId);
-                                      Long userId = Long.parseLong(otherUserId);
-                                      UserApiService userApiService = ApiClient.getClient(getContext()).create(UserApiService.class);
-                                      userApiService.getUserById(userId).enqueue(new Callback<ProfileResponse>() {
-                                          @Override
-                                          public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                                              if (response.isSuccessful()) {
-                                                  Chat chat = new Chat(chatId, message, response.body().getName(),
-                                                          response.body().getProfileImageUrl(), participants, timeStamp);
+                    if (!isAdded()) return;
 
-                                                  // 🧠 Optional: Check if chat already exists and update instead of re-adding
-                                                  boolean updated = false;
-                                                  for (int i = 0; i < chatList.size(); i++) {
-                                                      if (chatList.get(i).getChatId().equals(chatId)) {
-                                                          chatList.set(i, chat);
-                                                          updated = true;
-                                                          break;
-                                                      }
-                                                  }
-                                                  if (!updated) {
-                                                      chatList.add(chat);
-                                                  }
-                                                  chatsAdapter.notifyDataSetChanged();
-                                              }
-                                          }
+                    if (querySnapshot.isEmpty()) {
+                        showEmpty();
+                        return;
+                    }
 
-                                          @Override
-                                          public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                                              Log.e("API", "Failed to fetch user info", t);
-                                          }
-                                      });
-                                  }
-                              });
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        String chatId = doc.getId();
+                        List<String> participants = (List<String>) doc.get("participants");
 
-                  }
+                        doc.getReference().collection("messages")
+                                .orderBy("timestamp", Query.Direction.DESCENDING)
+                                .limit(1)
+                                .addSnapshotListener((messageSnapshot, e) -> {
+
+                                    if (!isAdded()) return;
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    if (e != null || messageSnapshot == null || messageSnapshot.isEmpty())
+                                        return;
+
+                                    DocumentSnapshot lastMessage = messageSnapshot.getDocuments().get(0);
+                                    String message = lastMessage.getString("message");
+                                    Timestamp timestamp = lastMessage.getTimestamp("timestamp");
+
+                                    String otherUserId = extractOtherUserId(chatId, currentUserId);
+                                    Long userId = Long.parseLong(otherUserId);
+
+                                    UserApiService api = ApiClient.getClient(requireContext()).create(UserApiService.class);
+                                    api.getUserById(userId).enqueue(new Callback<ProfileResponse>() {
+                                        @Override
+                                        public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                                            if (!isAdded()) return;
+                                            if (!response.isSuccessful() || response.body() == null) return;
+
+                                            ProfileResponse user = response.body();
+
+                                            Chat chat = new Chat(chatId, message, user.getName(),
+                                                    user.getProfileImageUrl(), participants, timestamp);
+
+                                            boolean updated = false;
+                                            for (int i = 0; i < chatList.size(); i++) {
+                                                if (chatList.get(i).getChatId().equals(chatId)) {
+                                                    chatList.set(i, chat);
+                                                    updated = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (!updated) chatList.add(chat);
+
+                                            showList();
+                                            chatsAdapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ProfileResponse> call, Throwable t) {}
+                                    });
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (!isAdded()) return;
+                    showNoInternet();
                 });
+    }
+
+    private String getCurrentUserId() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("currentUserId", null);
     }
 
     private String extractOtherUserId(String chatId, String currentUserId) {
@@ -147,11 +171,36 @@ public class MessageFragment extends Fragment {
         return ids[0].equals(currentUserId) ? ids[1] : ids[0];
     }
 
-    private String getCurrentUserId() {
-        SharedPreferences prefs = getActivity().getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);
-
-        return prefs.getString("currentUserId", null);
-
+    // UI Helpers
+    private void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+        noInternetLayout.setVisibility(View.GONE);
+        emptyStateLayout.setVisibility(View.GONE);
+        chatRecyclerView.setVisibility(View.GONE);
     }
 
+    private void showNoInternet() {
+        progressBar.setVisibility(View.GONE);
+        noInternetLayout.setVisibility(View.VISIBLE);
+        emptyStateLayout.setVisibility(View.GONE);
+        chatRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void showEmpty() {
+        progressBar.setVisibility(View.GONE);
+        emptyStateLayout.setVisibility(View.VISIBLE);
+        noInternetLayout.setVisibility(View.GONE);
+        chatRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void showList() {
+        if (chatList.isEmpty()) {
+            showEmpty();
+        } else {
+            progressBar.setVisibility(View.GONE);
+            chatRecyclerView.setVisibility(View.VISIBLE);
+            noInternetLayout.setVisibility(View.GONE);
+            emptyStateLayout.setVisibility(View.GONE);
+        }
+    }
 }

@@ -18,6 +18,7 @@ import com.ashvinprajapati.skillconnect.models.BookingStatus;
 import com.ashvinprajapati.skillconnect.models.BookingStatusUpdateRequest;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.BookingApiService;
+import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -79,9 +80,10 @@ public class ServiceBookingShowAdapter extends RecyclerView.Adapter<ServiceBooki
 
     private void updateBookingStatus(BookingResponse booking, String selectedStatus, int adapterPosition) {
         BookingStatusUpdateRequest requestDto = new BookingStatusUpdateRequest(selectedStatus);
-
+        TokenManager tokenManager = new TokenManager(context.getApplicationContext());
+        String token = "Bearer " + tokenManager.getToken();
         BookingApiService bookingApiService = ApiClient.getClient(context).create(BookingApiService.class);
-        bookingApiService.updateBookingStatus(booking.getId(), requestDto).enqueue(new Callback<Booking>() {
+        bookingApiService.updateBookingStatus(booking.getId(), requestDto, token).enqueue(new Callback<Booking>() {
             @Override
             public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if (response.isSuccessful() && response.body() != null){
