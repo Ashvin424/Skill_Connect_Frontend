@@ -22,6 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.fragments.BrowseFragment;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment postFragment = new PostServiceFragment();
     Fragment messageFragment = new MessageFragment();
     Fragment profileFragment = new ProfileFragment();
+    private int lastSelectedItemId = R.id.browseNavigation;
 
     Fragment active = browseFragment;
 
@@ -135,43 +137,66 @@ public class MainActivity extends AppCompatActivity {
         init();
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.frameLayout, profileFragment, "4").hide(profileFragment).commit();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frameLayout, messageFragment, "3").hide(messageFragment).commit();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frameLayout, postFragment, "2").hide(postFragment).commit();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frameLayout, browseFragment, "1").commit();
+                .add(R.id.frameLayout, profileFragment, "4").hide(profileFragment)
+                .add(R.id.frameLayout, messageFragment, "3").hide(messageFragment)
+                .add(R.id.frameLayout, postFragment, "2").hide(postFragment)
+                .add(R.id.frameLayout, browseFragment, "1")
+                .commit();
 
         titleTextView.setText("Browse");
         active = browseFragment;
 
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            Fragment fragment = null;
+
+            if (item.getItemId() == lastSelectedItemId) {
+                return false; // prevent re-click animation
+            }
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            boolean forward = item.getItemId() > lastSelectedItemId;
+
+            transaction.setCustomAnimations(
+                    forward ? R.anim.fade_in : R.anim.fade_in_reverse,
+                    forward ? R.anim.fade_out : R.anim.fade_out_reverse
+            );
+
+            lastSelectedItemId = item.getItemId();
+
+
 
             if (item.getItemId() == R.id.browseNavigation) {
                 titleTextView.setText("Browse");
-                fragment = new BrowseFragment();
-            } else if (item.getItemId() == R.id.postNavigation) {
+                transaction.hide(active).show(browseFragment).commit();
+                active = browseFragment;
+                return true;
+            }
+
+            if (item.getItemId() == R.id.postNavigation) {
                 titleTextView.setText("Post Service");
-                fragment = new PostServiceFragment();
-            } else if (item.getItemId() == R.id.messageNavigation) {
+                transaction.hide(active).show(postFragment).commit();
+                active = postFragment;
+                return true;
+            }
+
+            if (item.getItemId() == R.id.messageNavigation) {
                 titleTextView.setText("Message");
-                fragment = new MessageFragment();
-            } else if (item.getItemId() == R.id.profileNavigation) {
+                transaction.hide(active).show(messageFragment).commit();
+                active = messageFragment;
+                return true;
+            }
+
+            if (item.getItemId() == R.id.profileNavigation) {
                 titleTextView.setText("Profile");
-                fragment = new ProfileFragment();
+                transaction.hide(active).show(profileFragment).commit();
+                active = profileFragment;
+                return true;
             }
 
-            if (fragment != null) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.frameLayout, fragment)
-                        .commitAllowingStateLoss();
-            }
-
-            return true;
+            return false;
         });
+
 
 
 

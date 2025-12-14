@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,6 +36,7 @@ import retrofit2.Response;
 public class RatingsForCurrentUserActivity extends AppCompatActivity {
     private RecyclerView ratingsRV;
     private UserRatingAdapter userRatingAdapter;
+    LinearLayout emptyStateLayout;
     private List<RatingResponse> ratingsList = new ArrayList<>();
 
     @Override
@@ -46,7 +49,7 @@ public class RatingsForCurrentUserActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        emptyStateLayout = findViewById(R.id.emptyStateLayout);
         ratingsRV = findViewById(R.id.ratingsRV);
         ratingsRV.setLayoutManager(new LinearLayoutManager(this));
         userRatingAdapter = new UserRatingAdapter(ratingsList);
@@ -64,12 +67,14 @@ public class RatingsForCurrentUserActivity extends AppCompatActivity {
         ratingApiService.getRatingForUser(currentUserId, 0, 10).enqueue(new Callback<PagedResponse<RatingResponse>>() {
             @Override
             public void onResponse(Call<PagedResponse<RatingResponse>> call, Response<PagedResponse<RatingResponse>> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful() && response.body() != null){
                     List<RatingResponse> ratings = response.body().getContent();
                     userRatingAdapter.updateData(ratings);
                     Log.d("RatingActivity", "Ratings fetched successfully" + ratings);
                 }else {
-                    Toast.makeText(RatingsForCurrentUserActivity.this, "Failed to fetch ratings", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RatingsForCurrentUserActivity.this, "No Ratings Found", Toast.LENGTH_SHORT).show();
+                    emptyStateLayout.setVisibility(View.VISIBLE);
+                    ratingsRV.setVisibility(View.GONE);
                 }
             }
 

@@ -60,7 +60,6 @@ public class EditServiceActivity extends AppCompatActivity {
             public void onResponse(Call<UpdateServiceDTO> call, Response<UpdateServiceDTO> response) {
                 if (response.isSuccessful()){
                     Toast.makeText(EditServiceActivity.this, "Service Updated Successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(EditServiceActivity.this, MainActivity.class));
                     finish();
 
                 }else {

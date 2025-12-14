@@ -37,6 +37,9 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -47,6 +50,8 @@ dependencies {
     implementation(libs.lombok)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.firestore)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
     testImplementation(libs.junit)
     implementation (libs.gson)
     implementation (libs.retrofit)

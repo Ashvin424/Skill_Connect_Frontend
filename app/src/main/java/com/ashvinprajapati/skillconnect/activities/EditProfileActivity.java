@@ -66,6 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
         init();
         getUserProfile();
         userProfileImageView.setOnClickListener(v -> updateProfileImage());
+        updateProfileBtn.setOnClickListener(v -> handleProfileUpdate());
 
     }
 
@@ -77,62 +78,75 @@ public class EditProfileActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);    // Set the action to GET_CONTENT
         startActivityForResult(Intent.createChooser(intent, "Select Images"), IMAGE_PICK_CODE);
 
-        updateProfileBtn.setOnClickListener(v -> uploadProfileImage());
     }
-
-    private void uploadProfileImage() {
-        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
-        updateUserDTO.setName(fullNameEditText.getText().toString());
-        updateUserDTO.setUsername(usernameEditText.getText().toString());
-        updateUserDTO.setBio(bioEditText.getText().toString());
-        updateUserDTO.setLocation(locationEditText.getText().toString());
-        updateUserDTO.setSkills(skillsEditText.getText().toString());
-        updateUserDTO.setProfileImageUrl(userProfileImageView.getTag().toString());
-
-        String serviceMode = "";
-        int selectedRadioButtonId = serviceModeRadioGroup.getCheckedRadioButtonId();
-        if (selectedRadioButtonId != -1) {
-            RadioButton selectedServiceMode = findViewById(selectedRadioButtonId);
-            serviceMode = selectedServiceMode.getText().toString();
-        }
-        updateUserDTO.setServiceMode(serviceMode);
-        Uri uri = Uri.parse(updateUserDTO.getProfileImageUrl());
-
-        File file = UriToFileUtil.getFileFromUri(this, uri);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+    private void handleProfileUpdate() {
+        UpdateUserDTO updateUserDTO = collectUserData();
 
         TokenManager tokenManager = new TokenManager(this);
+        String token = tokenManager.getToken();
+
+        if (token == null) {
+            Toast.makeText(this, "Token missing. Please login again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (imageUri != null) {
+            uploadProfileImage(updateUserDTO, tokenManager.getToken());
+        } else {
+            updateProfile(updateUserDTO, tokenManager.getToken());
+        }
+    }
+    private UpdateUserDTO collectUserData() {
+        UpdateUserDTO dto = new UpdateUserDTO();
+        dto.setName(fullNameEditText.getText().toString());
+        dto.setUsername(usernameEditText.getText().toString());
+        dto.setBio(bioEditText.getText().toString());
+        dto.setLocation(locationEditText.getText().toString());
+        dto.setSkills(skillsEditText.getText().toString());
+
+        int selectedId = serviceModeRadioGroup.getCheckedRadioButtonId();
+        if (selectedId != -1) {
+            RadioButton rb = findViewById(selectedId);
+            dto.setServiceMode(rb.getText().toString());
+        }
+        return dto;
+    }
 
 
-        //TODO : Upload profile image and update profile
-        UserApiService userApiService = ApiClient.getClient(this).create(UserApiService.class);
-        userApiService.uploadProfileImage(part, "Bearer "+tokenManager.getToken()).enqueue(new Callback<ProfileImageUploadResponseDTO>() {
-            @Override
-            public void onResponse(Call<ProfileImageUploadResponseDTO> call, Response<ProfileImageUploadResponseDTO> response) {
-                if (response.isSuccessful()){
-                    Toast.makeText(EditProfileActivity.this, "Image Upload Successfully",Toast.LENGTH_SHORT).show();
-                    ProfileImageUploadResponseDTO profileImageUploadResponseDTO = response.body();
-                    updateUserDTO.setProfileImageUrl(profileImageUploadResponseDTO.getProfileImageUrl());
-                    updateProfile(updateUserDTO, tokenManager.getToken());
-                }
-                else {
-                    if (response.code() == 413) {
-                        // Check for 413 "Payload Too Large"
-                        Toast.makeText(EditProfileActivity.this, "Image file too large. Please select image smaller than 1MB.", Toast.LENGTH_LONG).show();
-                    } else {
-                        // Handle any other HTTP error
-                        Toast.makeText(EditProfileActivity.this, "Upload failed: " + response.message(), Toast.LENGTH_LONG).show();
+
+    private void uploadProfileImage(UpdateUserDTO updateUserDTO, String token) {
+
+        File file = UriToFileUtil.getFileFromUri(this, imageUri);
+        RequestBody requestBody =
+                RequestBody.create(MediaType.parse("image/*"), file);
+
+        MultipartBody.Part part =
+                MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+
+        UserApiService api = ApiClient.getClient(this).create(UserApiService.class);
+
+        api.uploadProfileImage(part, "Bearer " + token)
+                .enqueue(new Callback<ProfileImageUploadResponseDTO>() {
+                    @Override
+                    public void onResponse(Call<ProfileImageUploadResponseDTO> call,
+                                           Response<ProfileImageUploadResponseDTO> response) {
+                        if (response.isSuccessful()) {
+                            updateUserDTO.setProfileImageUrl(
+                                    response.body().getProfileImageUrl()
+                            );
+                            updateProfile(updateUserDTO, token);
+                        } else {
+                            Toast.makeText(EditProfileActivity.this,
+                                    "Image upload failed", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ProfileImageUploadResponseDTO> call, Throwable t) {
-                Log.e("Error", t.getMessage());
-            }
-        });
-
+                    @Override
+                    public void onFailure(Call<ProfileImageUploadResponseDTO> call, Throwable t) {
+                        Toast.makeText(EditProfileActivity.this,
+                                "Upload error", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void updateProfile(UpdateUserDTO updateUserDTO, String token) {
@@ -147,7 +161,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             .setPositiveButton("OK", (dialog, which) -> {
                                 dialog.dismiss();
                                 finish();
-                            });
+                            }).show();
                 }
                 else {
                     Toast.makeText(EditProfileActivity.this, response.errorBody().toString(), Toast.LENGTH_SHORT).show();

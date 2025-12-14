@@ -1,242 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ProfileFragment">
+
+    <!-- Center Loader -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_gravity="center"
-        />
+        android:visibility="gone" />
 
-
+    <!-- SCROLL CONTENT -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="48dp">
+        android:layout_height="match_parent">
+
         <LinearLayout
+            android:id="@+id/profileView"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="16dp">
+            android:padding="16dp"
+            android:paddingBottom="32dp">
+
+            <!-- SETTINGS BUTTON -->
             <ImageButton
                 android:id="@+id/settingBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_setting"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_gravity="end"
-                android:backgroundTint="@android:color/transparent"
-                />
+                android:padding="8dp"
+                android:src="@drawable/icon_setting"
+                android:contentDescription="Settings" />
+
+            <!-- PROFILE IMAGE -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userProfileImageView"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_gravity="center"
-                android:scaleType="centerCrop"/>
+                android:src="@drawable/icon_profile"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- NAME -->
             <TextView
                 android:id="@+id/fullNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:paddingTop="4dp" />
+
+            <!-- USERNAME -->
             <TextView
                 android:id="@+id/usernameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="18sp"
-                android:alpha=".75"/>
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:alpha="0.7"
+                android:paddingTop="2dp" />
+
+            <!-- CREATED AT -->
             <TextView
                 android:id="@+id/userCreatedAtTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="14sp"
-                android:alpha=".75"/>
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:alpha="0.6"
+                android:paddingTop="2dp"
+                android:paddingBottom="8dp" />
 
+            <!-- STATS SECTION -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginTop="24dp">
 
+                <!-- Skills Card -->
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1">
+                    android:layout_marginHorizontal="6dp"
+                    android:layout_weight="1"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
                         <TextView
                             android:id="@+id/skillCountTextView"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
-                            android:paddingTop="8dp"
-                            android:textSize="20dp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Skills"
-                            android:alpha=".75"
-                            android:textAlignment="center"/>
+                            android:textAppearance="?attr/textAppearanceHeadline6" />
 
+                        <TextView
+                            android:text="Skills"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="?attr/textAppearanceBody2" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Services Card -->
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1">
+                    android:layout_marginHorizontal="6dp"
+                    android:layout_weight="1"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
                         <TextView
                             android:id="@+id/serviceCountTextView"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="8dp"
-                            android:textAlignment="center"
-                            android:textSize="20dp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Services"
-                            android:alpha=".75"
-                            android:textAlignment="center"/>
+                            android:textAppearance="?attr/textAppearanceHeadline6" />
 
+                        <TextView
+                            android:text="Services"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="?attr/textAppearanceBody2" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Ratings Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/ratingsCardView"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:layout_margin="8dp"
+                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    android:clickable="true"
                     android:focusable="true">
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
                             android:orientation="horizontal"
-                            android:gravity="center">
+                            android:gravity="center" >
+
                             <TextView
                                 android:id="@+id/userRatingTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingTop="8dp"
-                                android:textAlignment="center"
-                                android:textSize="20dp"
-                                android:textStyle="bold"
-                                app:drawableEndCompat="@drawable/icon_star" />
+                                android:textAppearance="?attr/textAppearanceHeadline6" />
 
-                            <TextView
-                                android:id="@+id/reviewCountTextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="4dp"
-                                android:text="(1)"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_marginStart="4dp"
+                                android:src="@drawable/icon_star"
+                                android:contentDescription="Rating" />
                         </LinearLayout>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:text="Ratings"
-                            android:alpha=".75"
-                            android:textAlignment="center"/>
 
+                        <TextView
+                            android:id="@+id/reviewCountTextView"
+                            android:text="Ratings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:alpha="0.7"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="?attr/textAppearanceBody2" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/bookingsTextview"
+            <!-- BOOKINGS -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/bookingsCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bookings"
-                android:textSize="18sp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:textStyle="bold"
-                app:drawableRightCompat="@drawable/icon_forward_arrow" />
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:contentPadding="16dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bookings"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/icon_forward_arrow"
+                        app:tint="?attr/colorControlNormal"
+                        android:contentDescription="View Bookings"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- BIO -->
             <TextView
+                android:text="Bio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bio"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginTop="24dp" />
+
             <TextView
                 android:id="@+id/bioTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textSize="16sp"
-                android:alpha=".75"/>
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:alpha="0.7" />
+
+            <!-- SKILLS -->
             <TextView
+                android:text="Skills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Skills"
-                android:layout_marginTop="16dp"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginTop="24dp" />
+
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupSkills"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleLine="false"
-                app:chipSpacing="8dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                app:chipSpacingHorizontal="8dp" />
 
-<!--            TODO : Skills List DISPLAY HERE-->
-
+            <!-- SERVICES LIST -->
             <TextView
+                android:text="Services"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Services"
-                android:layout_marginTop="16dp"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginTop="24dp" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewServices"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"/>
-            <include layout="@layout/no_internet_layout"/>
-            <include layout="@layout/empty_state_layout"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
+
     </ScrollView>
+
+    <include layout="@layout/no_internet_layout" />
+    <include layout="@layout/empty_state_layout" />
+
 </FrameLayout>

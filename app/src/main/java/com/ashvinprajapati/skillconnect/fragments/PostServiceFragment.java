@@ -17,8 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.adapters.SelectImageAdapter;
 import com.ashvinprajapati.skillconnect.models.ImageUploadResponse;
@@ -55,6 +57,8 @@ public class PostServiceFragment extends Fragment {
     private RecyclerView imageRecyclerView;
     private MaterialButton postServiceBtn;
     private SelectImageAdapter imageAdapter;
+    private LinearLayout postServiceLayout;
+    private LottieAnimationView loadingAnim;
     private List<String> imageUris = new ArrayList<>();
     private List<String> uploadedImageUrls = new ArrayList<>();
 
@@ -103,6 +107,8 @@ public class PostServiceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_service, container, false);
         serviceTitleEditText = view.findViewById(R.id.serviceTitleEditText);
+        loadingAnim = view.findViewById(R.id.loadingAnim);
+        postServiceLayout = view.findViewById(R.id.postServiceLayout);
         serviceDescriptionEditText = view.findViewById(R.id.serviceDescriptionEditText);
         uploadImageBtn = view.findViewById(R.id.imageUploadBtn);
         postServiceBtn = view.findViewById(R.id.postServiceBtn);
@@ -159,7 +165,11 @@ public class PostServiceFragment extends Fragment {
         service.setTitle(title);
         service.setCategory(category);
         service.setDescription(description);
-
+        //set layout not editable or touchable
+        postServiceLayout.setClickable(false);
+        postServiceLayout.setFocusable(false);
+        postServiceLayout.setAlpha(0.5f);
+        loadingAnim.setVisibility(View.VISIBLE);
         ServicesApiService apiService = ApiClient.getClient(requireContext()).create(ServicesApiService.class);
         apiService.createService(service).enqueue(new Callback<Service>() {
             @Override
@@ -170,6 +180,7 @@ public class PostServiceFragment extends Fragment {
                     TokenManager tokenManager = new TokenManager(requireContext());
                     Log.d("TOKEN_BEFORE_CALL_RESPONSE", "Token in UploadImages: " + tokenManager.getToken());
                     uploadImages(serviceId);
+
                 } else {
                     Toast.makeText(requireContext(), "Failed to create service.", Toast.LENGTH_SHORT).show();
                 }
@@ -206,6 +217,10 @@ public class PostServiceFragment extends Fragment {
                     uploadedImageUrls = response.body().getImageUrls();
                     Toast.makeText(requireContext(), "Service Posted Successfully", Toast.LENGTH_SHORT).show();
                     clearPostServiceFields();
+                    loadingAnim.setVisibility(View.GONE);
+                    postServiceLayout.setAlpha(1);
+                    postServiceLayout.setClickable(true);
+                    postServiceLayout.setFocusable(true);
 
                 } else {
                     Toast.makeText(requireContext(), "Failed to upload images.", Toast.LENGTH_SHORT).show();

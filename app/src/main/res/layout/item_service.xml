@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        app:cardElevation="4dp"
+        android:orientation="vertical">
 
-        app:cardCornerRadius="12dp">
-
+        <!-- Service Image -->
+        <ImageView
+            android:id="@+id/imageService"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:contentDescription="Service Image"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <ImageView
-                android:id="@+id/imageService"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_margin="8dp"
-                android:scaleType="centerCrop" />
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title -->
             <TextView
                 android:id="@+id/textTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_marginStart="16dp"
-                android:text="Service Title" />
+                android:text="Service Title"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textStyle="bold" />
 
+            <!-- Posted By -->
             <TextView
                 android:id="@+id/textPostedBy"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="Posted By" />
-
-
+                android:layout_marginTop="4dp"
+                android:text="Posted by username"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?android:attr/textColorSecondary" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

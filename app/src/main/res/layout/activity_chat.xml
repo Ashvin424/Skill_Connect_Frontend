@@ -25,12 +25,21 @@
             android:layout_marginEnd="48dp"/>
     </androidx.appcompat.widget.Toolbar>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0.5"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
         app:stackFromEnd="true"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:layout_editor_absoluteX="16dp" />

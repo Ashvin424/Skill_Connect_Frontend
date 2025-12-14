@@ -1,146 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".fragments.PostServiceFragment">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <LinearLayout
+            android:id="@+id/postServiceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
+            <!-- Service Title -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="text"
-                android:textColorHint="@color/hintTextColor">
+                android:layout_marginTop="12dp"
+                android:hint="Service Title">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/serviceTitleEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Service Title"
-                    android:padding="20dp" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Category -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="text"
-                android:textColorHint="@color/hintTextColor">
+                android:layout_marginTop="12dp"
+                android:hint="Set Category">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/categoryTitleEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Set Category"
-                    android:padding="20dp" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Description -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="textMultiLine"
-                android:textColorHint="@color/hintTextColor">
+                android:layout_marginTop="12dp"
+                android:hint="Service Description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/serviceDescriptionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Service Description"
+                    android:gravity="top"
                     android:inputType="textMultiLine"
-                    android:lines="4"
-                    android:maxLines="6"
-                    android:minLines="2"
-                    android:padding="20dp" />
+                    android:minLines="3"
+                    android:maxLines="6" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Add Photos Label -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="Add Photos"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
-            <LinearLayout
+            <!-- Upload Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/dash_border"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="12dp"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorOutline">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="Add Photos"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="24dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:textAlignment="center"
-                    android:alpha=".6"
-                    android:text="Showcase your service with photos \n Note: You can't update images after posting"
-                    android:textSize="16sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Images"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:layout_marginBottom="8dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/imageUploadBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="40dp"
-                    android:backgroundTint="#E8E8E8"
-                    android:text="Upload"
-                    android:textColor="@color/black"
-                    app:cornerRadius="8dp" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Showcase your service visually.\nNote: You can't update images later."
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:layout_marginBottom="16dp" />
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/imageUploadBtn"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Images Recycler -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/imageRecyclerView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:orientation="horizontal"
-                android:visibility="gone" />
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                android:orientation="horizontal" />
 
+            <!-- Submit Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/postServiceBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/buttonColor"
-                android:padding="16dp"
+                android:layout_marginTop="24dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
                 android:text="Post New Service"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:rippleColor="@color/hintTextColor" />
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
         </LinearLayout>
-    </ScrollView>
-</FrameLayout>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingAnim"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:lottie_rawRes="@raw/loading"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="true"
+            />
+
+    </RelativeLayout>
+
+</ScrollView>

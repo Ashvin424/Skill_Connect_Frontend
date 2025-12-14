@@ -1,187 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.ServiceDetailActivity">
+
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:navigationIcon="@drawable/icon_back"
+        android:background="?attr/colorSurface"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center">
+        app:navigationIcon="@drawable/icon_back">
+
         <TextView
             android:id="@+id/toolbarTitleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text="Service Detail"
-            android:textAppearance="@style/Toolbar.titleText"
-            android:layout_marginEnd="48dp"/>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="48dp"
+            android:padding="12dp"/>
     </androidx.appcompat.widget.Toolbar>
 
+
+    <!-- Main Content -->
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/mainScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/titleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Service Title"
-                    android:lineBreakStyle="strict"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/categoryTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="8dp"
-                    android:lineBreakStyle="strict"
-                    android:text="Category"
-                    android:alpha=".75" />
-                <ImageView
-                    android:id="@+id/editService"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="true"
-                    android:src="@drawable/icon_edit"
-                    android:layout_gravity=""
-                    android:contentDescription="edit service btn"
-                    android:clickable="true"
-                    android:visibility="gone"
-                    />
-            </LinearLayout>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/descriptionTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:lineBreakStyle="strict"
-                android:text="Description"
-                android:textSize="16sp"
-                android:layout_marginTop="12dp"/>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:layout_marginTop="16dp"
-                android:id="@+id/viewPagerSlider"
-                android:layout_width="match_parent"
-                android:layout_height="450dp"/>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayoutDots"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:tabIndicatorHeight="0dp"
-                app:tabIndicatorColor="@android:color/transparent"
-                app:tabSelectedTextColor="@color/black"
-                app:tabTextColor="@android:color/darker_gray" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Service Provider"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:textStyle="bold"
-                android:textSize="18dp"/>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/serviceProviderCardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                app:cardCornerRadius="10dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/userProfileImageView"
-                        app:civ_border_width="1dp"
-                        app:civ_border_color="#FF000000"
-                        android:layout_width="75dp"
-                        android:layout_height="75dp"
-                        android:layout_marginEnd="16dp"
-                        android:contentDescription="@string/app_name" />
-
-                    <TextView
-                        android:id="@+id/usernameTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="18dp"
-                        android:text="provider name"/>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
+            <!-- TITLE + EDIT BUTTON -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Service Title"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"/>
+
+                <ImageButton
+                    android:id="@+id/editService"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/icon_edit"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    android:contentDescription="Edit Service"/>
+            </LinearLayout>
+
+            <!-- CATEGORY -->
+            <TextView
+                android:id="@+id/categoryTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:alpha="0.7"
+                android:layout_marginTop="4dp"/>
+
+
+            <!-- DESCRIPTION -->
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Description goes here…"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:lineSpacingExtra="4sp"/>
+
+
+            <!-- IMAGE SLIDER -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPagerSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"/>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- DOTS -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayoutDots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                app:tabIndicatorHeight="0dp"/>
+
+
+            <!-- PROVIDER TITLE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Service Provider"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:layout_marginTop="24dp"/>
+
+
+            <!-- PROVIDER CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/serviceProviderCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardElevation="3dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/userProfileImageView"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginEnd="16dp"
+                        app:civ_border_width="1dp"
+                        app:civ_border_color="?attr/colorOutline"/>
+
+                    <TextView
+                        android:id="@+id/usernameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Provider Name"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"/>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- RATING SECTION -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Provider Rating"
-                    android:layout_marginStart="16dp"
-                    android:textStyle="bold"
-                    android:textSize="18dp"/>
+                    android:textAppearance="?attr/textAppearanceTitleLarge"/>
+
                 <TextView
                     android:id="@+id/userRatingTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:textSize="48sp"
-                    android:layout_margin="4dp"
+                    android:layout_marginStart="16dp"
+                    android:text="4.9"
+                    android:textAppearance="?attr/textAppearanceDisplaySmall"
                     android:textStyle="bold"/>
+
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_star_large"
-                    android:contentDescription="@string/app_name"
-                    />
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="4dp"
+                    android:src="@drawable/icon_star_large"/>
             </LinearLayout>
+
+
+            <!-- BOOK THIS BUTTON -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bookServiceButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="72dp"
-                android:backgroundTint="@color/buttonColor"
-                android:padding="16dp"
                 android:text="Request This Service"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                app:cornerRadius="16dp"
+                android:padding="14dp"/>
+
         </LinearLayout>
-
     </ScrollView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

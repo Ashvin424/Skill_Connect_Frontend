@@ -157,7 +157,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
         usernameTextView.setText(service.getUsername());
         userRatingTextView.setText(String.valueOf(service.getUserRating()));
         categoryTextView.setText("Category: " + service.getCategory());
-
+        if(getCurrentUserId() != null && getCurrentUserId().equals(service.getUserId().toString()))
+            editServiceImageView.setVisibility(View.VISIBLE);
         editServiceImageView.setOnClickListener(v -> startActivity(new Intent(ServiceDetailActivity.this, EditServiceActivity.class).putExtra("serviceId", service.getId())));
 
         Glide.with(userProfileImageView)

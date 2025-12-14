@@ -66,6 +66,7 @@ public class ServiceBookingsFragment extends Fragment {
     private void fetchBookings() {
 
         long currentUserId = Long.parseLong(getCurrentUserId());
+
         BookingApiService bookingApiService = ApiClient.getClient(getContext()).create(BookingApiService.class);
 
         bookingApiService.getBookingsByProvider(currentUserId, 0, 10)
@@ -77,14 +78,16 @@ public class ServiceBookingsFragment extends Fragment {
                         if (response.isSuccessful() && response.body() != null) {
                             List<BookingResponse> bookings = response.body().getContent();
 
-                            if (bookings.isEmpty()) {
+                            if (bookings == null || bookings.isEmpty()) {
                                 showNoDataUI();
                             } else {
                                 showDataUI();
                                 serviceBookingShowAdapter.updateData(bookings);
                             }
                         } else {
-                            showNoInternetUI();
+                            // Log the error to see what's wrong
+                            Log.e("API_ERROR", "Response not successful: " + response.code());
+                            showNoInternetUI(); // This is probably being called (see next point)
                         }
                     }
 

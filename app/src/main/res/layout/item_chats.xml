@@ -1,41 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/dash_border"
-    android:layout_margin="8dp"
-    android:padding="4dp">
+    android:padding="12dp"
+    android:background="@drawable/chat_item_bg">
+
+    <!-- Profile Image -->
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userProfileImageView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/icon_profile"/>
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        app:civ_border_width="1dp"
+        app:civ_border_color="#E0E0E0"
+        android:src="@drawable/icon_profile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Username -->
     <TextView
         android:id="@+id/usernameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="username"
-        android:layout_toEndOf="@id/userProfileImageView"/>
+        android:text="Username"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@id/userProfileImageView"
+        app:layout_constraintTop_toTopOf="@id/userProfileImageView"
+        app:layout_constraintEnd_toStartOf="@id/timeStampTextView"
+        app:layout_constraintHorizontal_bias="0" />
 
-    <TextView
-        android:id="@+id/lastMsgTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/usernameTextView"
-        android:layout_marginStart="8dp"
-        android:alpha=".65"
-        android:text="Hello"
-        android:layout_toEndOf="@id/userProfileImageView" />
-
+    <!-- Timestamp -->
     <TextView
         android:id="@+id/timeStampTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/lastMsgTextView"
-        android:layout_marginEnd="8dp"
-        android:layout_alignParentEnd="true"
-        android:text="11:15" />
+        android:text="11:15"
+        android:textSize="13sp"
+        android:alpha="0.7"
+        app:layout_constraintTop_toTopOf="@id/usernameTextView"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Last message -->
+    <TextView
+        android:id="@+id/lastMsgTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Last message goes here"
+        android:alpha="0.65"
+        android:textSize="14sp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="@id/usernameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/usernameTextView" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -44,11 +46,13 @@ import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView fullNameTextView, usernameTextView, userCreatedAtTextView, skillCountTextView, serviceCountTextView, reviewCountTextView, bioTextView, userRatingTextView, bookingsTextview;
+    private TextView fullNameTextView, usernameTextView, userCreatedAtTextView, skillCountTextView, serviceCountTextView, reviewCountTextView, bioTextView, userRatingTextView;
     private CircleImageView userProfileImageView;
     private ChipGroup chipGroupSkills;
     private CardView ratingsCardView;
+    private MaterialCardView bookingCardView;
     private RecyclerView recyclerViewServices;
+    private LinearLayout profileView;
     private ProgressBar progressBar;
     private ProfileServiceAdapter adapter;
     private View noInternetLayout;
@@ -68,9 +72,10 @@ public class ProfileFragment extends Fragment {
         recyclerViewServices = view.findViewById(R.id.recyclerViewServices);
         skillCountTextView = view.findViewById(R.id.skillCountTextView);
         serviceCountTextView = view.findViewById(R.id.serviceCountTextView);
-        bookingsTextview = view.findViewById(R.id.bookingsTextview);
+        bookingCardView = view.findViewById(R.id.bookingsCard);
         ratingsCardView = view.findViewById(R.id.ratingsCardView);
         reviewCountTextView = view.findViewById(R.id.reviewCountTextView);
+        profileView = view.findViewById(R.id.profileView);
         bioTextView = view.findViewById(R.id.bioTextView);
         userRatingTextView = view.findViewById(R.id.userRatingTextView);
         progressBar = view.findViewById(R.id.progressBar);
@@ -79,7 +84,7 @@ public class ProfileFragment extends Fragment {
 
         recyclerViewServices.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        bookingsTextview.setOnClickListener(v -> startActivity(new Intent(getActivity(), BookingsActivity.class)));
+        bookingCardView.setOnClickListener(v -> startActivity(new Intent(getActivity(), BookingsActivity.class)));
         ratingsCardView.setOnClickListener(v -> startActivity(new Intent(requireContext(), RatingsForCurrentUserActivity.class)));
         view.findViewById(R.id.settingBtn).setOnClickListener(v -> startActivity(new Intent(getContext(), SettingsActivity.class)));
 
@@ -175,6 +180,8 @@ public class ProfileFragment extends Fragment {
 
     private void showNoInternet() {
         noInternetLayout.setVisibility(View.VISIBLE);
+        profileView.setVisibility(View.GONE);
+        hideLoader();
     }
 
     private void showProfileUI() {

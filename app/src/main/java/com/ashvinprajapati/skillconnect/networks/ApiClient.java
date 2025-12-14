@@ -16,6 +16,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static Retrofit retrofit = null;
+    private static String BASE_URL = "http://3.110.33.19:8080/";
+
 
     public static Retrofit getClient(Context context) {
 
@@ -39,7 +41,7 @@ public class ApiClient {
                     .addInterceptor(new AuthIntercepter(context, tokenManager));
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://skillconnect.ap-southeast-2.elasticbeanstalk.com/")
+                    .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(httpClient.build())
                     .build();
