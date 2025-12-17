@@ -46,6 +46,10 @@ public class Service implements Serializable {
 
     private String userProfileImageUrl;
 
+    @SerializedName(
+            value = "active",
+            alternate = {"isActive"}
+    )
     private Boolean isActive;
     private String providerMode;
 

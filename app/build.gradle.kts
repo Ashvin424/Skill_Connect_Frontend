@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 
 plugins {
     alias(libs.plugins.android.application)
@@ -16,7 +15,16 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"http://3.110.33.19:8080/\""
+        );
+        buildConfigField(
+            "String",
+            "BASE_URL_LOCAL",
+            "\"http://10.251.79.140:8080/\""
+        );
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     
@@ -39,6 +47,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

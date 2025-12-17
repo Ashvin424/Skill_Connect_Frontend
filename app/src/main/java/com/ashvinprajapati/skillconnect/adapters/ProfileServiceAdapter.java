@@ -1,5 +1,6 @@
 package com.ashvinprajapati.skillconnect.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,17 +35,26 @@ public class ProfileServiceAdapter extends RecyclerView.Adapter<ProfileServiceAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProfileServiceAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Service service = serviceList.get(position);
-        holder.serviceTitleTextView.setText(service.getTitle());
-        holder.firstCharTextView.setText(service.getTitle() != null && !service.getTitle().isEmpty() ? service.getTitle().substring(0, 1) : "?");
 
-        if (!Boolean.TRUE.equals(service.getActive())){
+        holder.serviceTitleTextView.setText(service.getTitle());
+        holder.firstCharTextView.setText(
+                service.getTitle() != null && !service.getTitle().isEmpty()
+                        ? service.getTitle().substring(0, 1)
+                        : "?"
+        );
+
+        holder.deactivatedTagTV.setVisibility(View.GONE);
+
+        Log.d("SERVICE_ACTIVE",
+                "Service: " + service.getTitle() +
+                        " active = " + service.getActive()
+        );
+        if (!Boolean.TRUE.equals(service.getActive())) {
             holder.deactivatedTagTV.setVisibility(View.VISIBLE);
         }
-        else {
-            holder.deactivatedTagTV.setVisibility(View.GONE);
-        }
+
 
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
@@ -52,6 +62,7 @@ public class ProfileServiceAdapter extends RecyclerView.Adapter<ProfileServiceAd
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

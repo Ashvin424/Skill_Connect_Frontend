@@ -17,8 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static Retrofit retrofit = null;
-//    private static String BASE_URL = BuildConfig.BASE_URL; //AWS URL
-    private static String BASE_URL = BuildConfig.BASE_URL_LOCAL; //Local url
+    private static String BASE_URL = BuildConfig.BASE_URL; //AWS URL
+//    private static String BASE_URL = BuildConfig.BASE_URL_LOCAL; //Local url
 
     public static Retrofit getClient(Context context) {
 

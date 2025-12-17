@@ -148,7 +148,7 @@ public class ProfileFragment extends Fragment implements Refreshable {
                     Glide.with(userProfileImageView)
                             .load(profile.getProfileImageUrl())
                             .placeholder(R.drawable.icon_profile)
-                            .error(R.drawable.icon_help)
+                            .error(R.drawable.icon_error)
                             .into(userProfileImageView);
 
                     adapter = new ProfileServiceAdapter(profile.getServices(), service -> {
