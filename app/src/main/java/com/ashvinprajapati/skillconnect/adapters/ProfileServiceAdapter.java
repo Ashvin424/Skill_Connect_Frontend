@@ -39,6 +39,13 @@ public class ProfileServiceAdapter extends RecyclerView.Adapter<ProfileServiceAd
         holder.serviceTitleTextView.setText(service.getTitle());
         holder.firstCharTextView.setText(service.getTitle() != null && !service.getTitle().isEmpty() ? service.getTitle().substring(0, 1) : "?");
 
+        if (!Boolean.TRUE.equals(service.getActive())){
+            holder.deactivatedTagTV.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.deactivatedTagTV.setVisibility(View.GONE);
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(service);
@@ -51,11 +58,12 @@ public class ProfileServiceAdapter extends RecyclerView.Adapter<ProfileServiceAd
         return serviceList.size();
     }
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView serviceTitleTextView, firstCharTextView;
+        TextView serviceTitleTextView, firstCharTextView, deactivatedTagTV;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             serviceTitleTextView = itemView.findViewById(R.id.serviceTitleTextView);
             firstCharTextView = itemView.findViewById(R.id.firstCharTextView);
+            deactivatedTagTV = itemView.findViewById(R.id.deactivatedTagTV);
         }
     }
 }

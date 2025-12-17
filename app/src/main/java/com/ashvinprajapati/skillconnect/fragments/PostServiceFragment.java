@@ -160,6 +160,10 @@ public class PostServiceFragment extends Fragment {
         String title = serviceTitleEditText.getText().toString();
         String category = categoryTitleEditText.getText().toString();
         String description = serviceDescriptionEditText.getText().toString();
+        if (title.isEmpty() || category.isEmpty() || description.isEmpty()){
+            Toast.makeText(requireContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Service service = new Service();
         service.setTitle(title);

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.adapters.ChatsAdapter;
 import com.ashvinprajapati.skillconnect.models.Chat;
@@ -24,6 +25,7 @@ import com.ashvinprajapati.skillconnect.models.User;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
 import com.ashvinprajapati.skillconnect.utils.NetworkUtils;
+import com.ashvinprajapati.skillconnect.utils.Refreshable;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,13 +38,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MessageFragment extends Fragment {
+public class MessageFragment extends Fragment implements Refreshable {
 
     private RecyclerView chatRecyclerView;
     private ChatsAdapter chatsAdapter;
     private List<Chat> chatList = new ArrayList<>();
 
-    private ProgressBar progressBar;
+    private LottieAnimationView loadingAnim;
     private View noInternetLayout, emptyStateLayout;
     private Button btnRetry;
 
@@ -54,7 +56,7 @@ public class MessageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_message, container, false);
 
         chatRecyclerView = view.findViewById(R.id.chatsRecyclerView);
-        progressBar = view.findViewById(R.id.progressBar);
+        loadingAnim = view.findViewById(R.id.loadingAnim);
         noInternetLayout = view.findViewById(R.id.noInternetLayout);
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         btnRetry = view.findViewById(R.id.btnRetry);
@@ -110,7 +112,8 @@ public class MessageFragment extends Fragment {
 
                                     if (!isAdded()) return;
 
-                                    progressBar.setVisibility(View.GONE);
+                                    loadingAnim.setVisibility(View.GONE);
+                                    loadingAnim.pauseAnimation();
 
                                     if (e != null || messageSnapshot == null || messageSnapshot.isEmpty())
                                         return;
@@ -173,21 +176,24 @@ public class MessageFragment extends Fragment {
 
     // UI Helpers
     private void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadingAnim.setVisibility(View.VISIBLE);
+        loadingAnim.playAnimation();
         noInternetLayout.setVisibility(View.GONE);
         emptyStateLayout.setVisibility(View.GONE);
         chatRecyclerView.setVisibility(View.GONE);
     }
 
     private void showNoInternet() {
-        progressBar.setVisibility(View.GONE);
+        loadingAnim.setVisibility(View.GONE);
+        loadingAnim.pauseAnimation();
         noInternetLayout.setVisibility(View.VISIBLE);
         emptyStateLayout.setVisibility(View.GONE);
         chatRecyclerView.setVisibility(View.GONE);
     }
 
     private void showEmpty() {
-        progressBar.setVisibility(View.GONE);
+        loadingAnim.setVisibility(View.GONE);
+        loadingAnim.pauseAnimation();
         emptyStateLayout.setVisibility(View.VISIBLE);
         noInternetLayout.setVisibility(View.GONE);
         chatRecyclerView.setVisibility(View.GONE);
@@ -197,10 +203,16 @@ public class MessageFragment extends Fragment {
         if (chatList.isEmpty()) {
             showEmpty();
         } else {
-            progressBar.setVisibility(View.GONE);
+            loadingAnim.setVisibility(View.GONE);
+            loadingAnim.pauseAnimation();
             chatRecyclerView.setVisibility(View.VISIBLE);
             noInternetLayout.setVisibility(View.GONE);
             emptyStateLayout.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        loadChats();
     }
 }

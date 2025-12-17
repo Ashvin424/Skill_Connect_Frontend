@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#14162E"
     tools:context=".activities.OtherUserProfileActivity">
 
-    <!-- Toolbar -->
+    <!-- ================= TOOLBAR ================= -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#14162E"
         app:navigationIcon="@drawable/icon_back"
+        app:title="User Name"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/toolbarTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="User Profile"
-            android:textAppearance="@style/Toolbar.titleText"
-            android:layout_marginEnd="48dp"/>
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Center Loader -->
+    <!-- ================= LOADER ================= -->
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- SCROLL CONTENT -->
-    <ScrollView
+    <!-- ================= SCROLL CONTENT ================= -->
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,21 +48,20 @@
 
         <LinearLayout
             android:id="@+id/profileView"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="16dp"
             android:paddingBottom="32dp">
 
             <!-- PROFILE IMAGE -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userProfileImageView"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
                 android:src="@drawable/icon_profile"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"/>
 
             <!-- NAME -->
             <TextView
@@ -72,8 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceHeadline5"
-                android:paddingTop="4dp" />
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
 
             <!-- USERNAME -->
             <TextView
@@ -81,9 +79,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:alpha="0.7"
-                android:paddingTop="2dp" />
+                android:textSize="14sp"
+                android:textColor="#B0B3FF"
+                android:layout_marginTop="2dp"/>
 
             <!-- CREATED AT -->
             <TextView
@@ -91,12 +89,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:alpha="0.6"
-                android:paddingTop="2dp"
-                android:paddingBottom="8dp" />
+                android:textSize="12sp"
+                android:textColor="#7E82C7"
+                android:layout_marginTop="2dp"/>
 
-            <!-- STATS SECTION -->
+            <!-- ================= STATS ================= -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,14 +102,17 @@
                 android:gravity="center"
                 android:layout_marginTop="24dp">
 
-                <!-- Skills Card -->
+                <!-- Skills -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginHorizontal="6dp"
+                    app:cardBackgroundColor="#22263E"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E335F"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -124,26 +125,31 @@
                             android:id="@+id/skillCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceHeadline6" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:text="Skills"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBody2" />
+                            android:textSize="13sp"
+                            android:textColor="#9FA3FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Services Card -->
+                <!-- Services -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginHorizontal="6dp"
+                    app:cardBackgroundColor="#22263E"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E335F"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -156,29 +162,34 @@
                             android:id="@+id/serviceCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceHeadline6" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:text="Services"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBody2" />
+                            android:textSize="13sp"
+                            android:textColor="#9FA3FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Ratings Card -->
+                <!-- Rating -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/ratingsCardView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp"
+                    android:layout_marginHorizontal="6dp"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    app:cardBackgroundColor="#22263E"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E335F"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -188,20 +199,22 @@
                         android:padding="16dp">
 
                         <LinearLayout
-                            android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:gravity="center" >
+                            android:gravity="center">
 
                             <TextView
                                 android:id="@+id/userRatingTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceHeadline6" />
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white" />
 
                             <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
                                 android:layout_marginStart="4dp"
                                 android:src="@drawable/icon_star"
                                 android:contentDescription="Rating" />
@@ -209,76 +222,89 @@
 
                         <TextView
                             android:id="@+id/reviewCountTextView"
-                            android:text="Ratings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBody2" />
+                            android:text="Ratings"
+                            android:textSize="13sp"
+                            android:textColor="#9FA3FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
-            <!-- BIO -->
+            <!-- ================= BIO ================= -->
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Bio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:layout_marginTop="24dp" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="24dp"/>
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/bioTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:alpha="0.7" />
+                android:textColor="#B0B3FF"
+                android:layout_marginTop="8dp"/>
 
-            <!-- SKILLS -->
+            <!-- ================= SKILLS ================= -->
+
             <TextView
-                android:text="Skills"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:layout_marginTop="24dp" />
+                android:text="Skills"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="24dp"/>
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupSkills"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:chipSpacingHorizontal="8dp" />
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp"/>
 
-            <!-- RATING SECTION -->
+            <!-- ================= ADD RATING ================= -->
+
             <LinearLayout
                 android:id="@+id/ratingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="24dp">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Rate this user"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"/>
+
                 <Spinner
                     android:id="@+id/ratingSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" />
+                    android:layout_marginTop="8dp"/>
+
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:hint="Add Comment">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/commentEditText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"/>
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/rateBtn"
                     android:layout_width="match_parent"
@@ -287,24 +313,26 @@
                     android:layout_marginTop="16dp"/>
             </LinearLayout>
 
+            <!-- ================= SERVICES ================= -->
 
-            <!-- SERVICES LIST -->
             <TextView
-                android:text="Services"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:layout_marginTop="24dp" />
+                android:text="Services"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="24dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewServices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"/>
 
         </LinearLayout>
-
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

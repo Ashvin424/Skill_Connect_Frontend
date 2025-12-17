@@ -46,6 +46,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         } else {
             holder.textPostedBy.setText("Posted By Unknown User");
         }
+        holder.textRating.setText("⭐ "+ service.getUserRating());
+        holder.textCategory.setText(service.getCategory());
         Log.d("DEBUG", "Service ID: " + service.getId());
         Log.d("DEBUG", "ImageUrls: " + service.getImageUrls());
         if (service.getImageUrls() != null && !service.getImageUrls().isEmpty()) {
@@ -69,13 +71,15 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
 
     public static class ServiceViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textTitle, textPostedBy;
+        TextView textTitle, textPostedBy, textCategory, textRating;
         ImageView imageService;
         public ServiceViewHolder(@NonNull View itemView) {
             super(itemView);
             textTitle = itemView.findViewById(R.id.textTitle);
             textPostedBy = itemView.findViewById(R.id.textPostedBy);
             imageService = itemView.findViewById(R.id.imageService);
+            textCategory = itemView.findViewById(R.id.textCategory);
+            textRating = itemView.findViewById(R.id.textRating);
         }
     }
 }

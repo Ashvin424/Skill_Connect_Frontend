@@ -37,4 +37,14 @@ public class ServiceViewModel extends ViewModel {
     public LiveData<Boolean> getBookingStatus(){
         return bookingLiveData;
     }
+
+    private final MutableLiveData<Boolean> deleteResult = new MutableLiveData<>();
+
+    public LiveData<Boolean> getDeleteResult() {
+        return deleteResult;
+    }
+    public void deleteService(Long serviceId, String token) {
+        serviceRepository.deleteService(serviceId, token)
+                .observeForever(deleteResult::setValue);
+    }
 }

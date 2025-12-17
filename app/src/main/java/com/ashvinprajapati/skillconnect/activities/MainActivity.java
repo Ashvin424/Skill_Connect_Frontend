@@ -10,17 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -33,7 +27,9 @@ import com.ashvinprajapati.skillconnect.models.User;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.AuthApiService;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
+import com.ashvinprajapati.skillconnect.utils.Refreshable;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -43,29 +39,180 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private TextView titleTextView;
-    private FrameLayout frameLayout;
+    private MaterialToolbar toolbar;
     private BottomNavigationView bottomNavigationView;
+    private FrameLayout frameLayout;
 
-    Fragment browseFragment = new BrowseFragment();
-    Fragment postFragment = new PostServiceFragment();
-    Fragment messageFragment = new MessageFragment();
-    Fragment profileFragment = new ProfileFragment();
-    private int lastSelectedItemId = R.id.browseNavigation;
-
-    Fragment active = browseFragment;
+    private Fragment browseFragment;
+    private Fragment postFragment;
+    private Fragment messageFragment;
+    private Fragment profileFragment;
+    private Fragment activeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
-            }
+
+        // 🔐 Token check
+        TokenManager tokenManager = new TokenManager(this);
+        if (tokenManager.getToken() == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
         }
+
+        setContentView(R.layout.activity_main);
+        initViews();
+        setupNotifications();
+        storeCurrentUserId();
+        setupFragments();
+        setupBottomNavigation();
+        setupFcmToken();
+    }
+
+    // ---------------- INIT ----------------
+
+    private void initViews() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        bottomNavigationView = findViewById(R.id.bottomNavigationBar);
+        frameLayout = findViewById(R.id.frameLayout);
+    }
+
+    // ---------------- FRAGMENTS ----------------
+
+    private void setupFragments() {
+
+        browseFragment = new BrowseFragment();
+        postFragment = new PostServiceFragment();
+        messageFragment = new MessageFragment();
+        profileFragment = new ProfileFragment();
+
+        activeFragment = browseFragment;
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.frameLayout, profileFragment, "PROFILE").hide(profileFragment)
+                .add(R.id.frameLayout, messageFragment, "MESSAGE").hide(messageFragment)
+                .add(R.id.frameLayout, postFragment, "POST").hide(postFragment)
+                .add(R.id.frameLayout, browseFragment, "BROWSE")
+                .commit();
+
+        bottomNavigationView.setSelectedItemId(R.id.browseNavigation);
+    }
+
+    // ---------------- BOTTOM NAV ----------------
+
+    private void setupBottomNavigation() {
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            FragmentTransaction transaction =
+                    getSupportFragmentManager().beginTransaction();
+
+            if (item.getItemId() == R.id.browseNavigation) {
+                toolbar.setTitle("Browse");
+                transaction.hide(activeFragment).show(browseFragment).commit();
+                activeFragment = browseFragment;
+                return true;
+            }
+
+            if (item.getItemId() == R.id.postNavigation) {
+                toolbar.setTitle("Post Service");
+                transaction.hide(activeFragment).show(postFragment).commit();
+                activeFragment = postFragment;
+                return true;
+            }
+
+            if (item.getItemId() == R.id.messageNavigation) {
+                toolbar.setTitle("Messages");
+                transaction.hide(activeFragment).show(messageFragment).commit();
+                activeFragment = messageFragment;
+                return true;
+            }
+
+            if (item.getItemId() == R.id.profileNavigation) {
+                toolbar.setTitle("Profile");
+                transaction.hide(activeFragment).show(profileFragment).commit();
+                activeFragment = profileFragment;
+                return true;
+            }
+
+            return false;
+        });
+
+        // 🔁 Refresh on reselect
+        bottomNavigationView.setOnItemReselectedListener(item -> {
+            if (activeFragment instanceof Refreshable) {
+                ((Refreshable) activeFragment).onRefresh();
+            }
+        });
+    }
+
+    // ---------------- USER / FCM ----------------
+
+    private void storeCurrentUserId() {
+        AuthApiService authApiService = ApiClient.getClient(this).create(AuthApiService.class);
+        authApiService.getMe().enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SharedPreferences prefs =
+                            getSharedPreferences("SkillConnectPrefs", MODE_PRIVATE);
+                    prefs.edit()
+                            .putString("currentUserId", String.valueOf(response.body().getId()))
+                            .apply();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("USER", "Failed to fetch user");
+            }
+        });
+    }
+
+    private void setupFcmToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(token -> {
+                    SharedPreferences prefs =
+                            getSharedPreferences("SkillConnectPrefs", MODE_PRIVATE);
+                    prefs.edit().putString("fcm_token", token).apply();
+
+                    String email = prefs.getString("email", null);
+                    if (email != null) {
+                        ApiClient.getClient(this)
+                                .create(UserApiService.class)
+                                .updateFcmToken(email, token)
+                                .enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, Response<Void> response) {
+                                        Log.d("FCM", "Token updated");
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Log.e("FCM", "Token update failed");
+                                    }
+                                });
+                    }
+                });
+    }
+
+    // ---------------- NOTIFICATIONS ----------------
+
+    private void setupNotifications() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    1001
+            );
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     "FCM_CHANNEL",
@@ -75,182 +222,5 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
-
-        AuthApiService authApiService = ApiClient.getClient(this).create(AuthApiService.class);
-        authApiService.getMe().enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()){
-                    User user = response.body();
-                    SharedPreferences prefs = getSharedPreferences("SkillConnectPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("currentUserId", String.valueOf(user.getId()));
-                    editor.apply();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Failed to store UserId", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        // ✅ Token check first
-        TokenManager tokenManager = new TokenManager(this);
-        String token = tokenManager.getToken();
-        Log.d("TOKEN_CHECK", "Token in MainActivity: " + token);
-        if (token == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        }
-
-        setContentView(R.layout.activity_main);
-        String email = getIntent().getStringExtra("email");
-        if (email != null) {
-            FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(task -> {
-                        if (!task.isSuccessful()) {
-                            Log.w("FCM", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String fcmToken = task.getResult();
-                        Log.d("FCM", "FCM Token: " + fcmToken);
-
-                        // Save token in shared prefs (optional)
-                        SharedPreferences preferences = getSharedPreferences("SkillConnectPrefs", MODE_PRIVATE);
-                        preferences.edit().putString("fcm_token", fcmToken).apply();
-
-                        // Upload token to backend
-                        String emailLogin = preferences.getString("email", null); // make sure this is saved during login
-                        if (emailLogin != null) {
-                            updateFcmTokenOnBackend(email, fcmToken);
-                        }
-                    });
-        }
-
-
-
-        init();
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.frameLayout, profileFragment, "4").hide(profileFragment)
-                .add(R.id.frameLayout, messageFragment, "3").hide(messageFragment)
-                .add(R.id.frameLayout, postFragment, "2").hide(postFragment)
-                .add(R.id.frameLayout, browseFragment, "1")
-                .commit();
-
-        titleTextView.setText("Browse");
-        active = browseFragment;
-
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-
-            if (item.getItemId() == lastSelectedItemId) {
-                return false; // prevent re-click animation
-            }
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            boolean forward = item.getItemId() > lastSelectedItemId;
-
-            transaction.setCustomAnimations(
-                    forward ? R.anim.fade_in : R.anim.fade_in_reverse,
-                    forward ? R.anim.fade_out : R.anim.fade_out_reverse
-            );
-
-            lastSelectedItemId = item.getItemId();
-
-
-
-            if (item.getItemId() == R.id.browseNavigation) {
-                titleTextView.setText("Browse");
-                transaction.hide(active).show(browseFragment).commit();
-                active = browseFragment;
-                return true;
-            }
-
-            if (item.getItemId() == R.id.postNavigation) {
-                titleTextView.setText("Post Service");
-                transaction.hide(active).show(postFragment).commit();
-                active = postFragment;
-                return true;
-            }
-
-            if (item.getItemId() == R.id.messageNavigation) {
-                titleTextView.setText("Message");
-                transaction.hide(active).show(messageFragment).commit();
-                active = messageFragment;
-                return true;
-            }
-
-            if (item.getItemId() == R.id.profileNavigation) {
-                titleTextView.setText("Profile");
-                transaction.hide(active).show(profileFragment).commit();
-                active = profileFragment;
-                return true;
-            }
-
-            return false;
-        });
-
-
-
-
-    }
-
-
-    public void init() {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        bottomNavigationView = findViewById(R.id.bottomNavigationBar);
-        titleTextView = findViewById(R.id.titleTextView);
-        frameLayout = findViewById(R.id.frameLayout);
-    }
-    private void updateFcmTokenOnBackend(String email, String token) {
-        ApiClient.getClient(this).create(UserApiService.class).updateFcmToken(email, token)
-                .enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            Log.d("FCM", "FCM token updated successfully on backend");
-                        } else {
-                            Log.e("FCM", "Failed to update FCM token on backend");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Log.e("FCM", "Error updating FCM token: " + t.getMessage());
-                    }
-                });
-    }
-    private void updateFcmTokenToBackend(String userEmail) {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Log.w("FCM_TOKEN", "Fetching FCM token failed", task.getException());
-                        return;
-                    }
-
-                    String token = task.getResult();
-                    Log.d("FCM_TOKEN", "Token: " + token);
-
-
-                    ApiClient.getClient(this).create(AuthApiService.class).updateFcmToken(userEmail, token).enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            Log.d("FCM_TOKEN", "Token updated successfully.");
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Log.e("FCM_TOKEN", "Token update failed: " + t.getMessage());
-                        }
-                    });
-                });
     }
 }

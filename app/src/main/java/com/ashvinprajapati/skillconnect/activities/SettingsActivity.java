@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.AuthApiService;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -25,8 +26,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity {
-    private Toolbar toolbar;
-    private LinearLayout editProfileLayout, passwordChangeLayout, appSettingLayout, supportLayout;
+    private MaterialToolbar toolbar;
+    private LinearLayout editProfileLayout, passwordChangeLayout, supportLayout;
     private MaterialButton logoutBtn;
 
 
@@ -66,15 +67,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         //appSettingLayout Click Listener
-        appSettingLayout.setOnClickListener(v->{
-            Toast.makeText(this, "App Setting Coming Soon", Toast.LENGTH_SHORT).show();
-            //TODO : Navigate to App Settings Page
-        });
 
         //supportLayout Click Listener
         supportLayout.setOnClickListener(v->{
             Toast.makeText(this, "Help & Support Coming Soon", Toast.LENGTH_SHORT).show();
-            //TODO : Navigate to Help & Support Page
+            startActivity(new Intent(this, HelpAndSupportActivity.class));
         });
 
         //logoutBtn Click Listener
@@ -133,7 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         editProfileLayout = findViewById(R.id.editProfileLayout);
         passwordChangeLayout = findViewById(R.id.passwordChangeLayout);
-        appSettingLayout = findViewById(R.id.appSettingLayout);
         supportLayout = findViewById(R.id.supportLayout);
         logoutBtn = findViewById(R.id.logoutBtn);
     }

@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -24,13 +24,10 @@ import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.ViewModels.ServiceViewModel;
 import com.ashvinprajapati.skillconnect.ViewModels.ServiceViewModelFactory;
 import com.ashvinprajapati.skillconnect.adapters.ViewPagerSliderAdapter;
-import com.ashvinprajapati.skillconnect.models.Booking;
-import com.ashvinprajapati.skillconnect.models.BookingRequest;
 import com.ashvinprajapati.skillconnect.models.Service;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.BookingApiService;
 import com.ashvinprajapati.skillconnect.networks.ServicesApiService;
-import com.ashvinprajapati.skillconnect.networks.UserApiService;
 import com.ashvinprajapati.skillconnect.repository.ServiceRepository;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.bumptech.glide.Glide;
@@ -38,16 +35,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class ServiceDetailActivity extends AppCompatActivity {
 
-    private TextView titleTextView, descriptionTextView, usernameTextView, userRatingTextView, categoryTextView;
-    private ImageView userProfileImageView, editServiceImageView;
+    private TextView titleTextView, descriptionTextView, usernameTextView, userRatingTextView, categoryTextView, deactivatedTagTV, providerModeTextView;
+    private ImageView userProfileImageView, editServiceImageView, deleteServiceImageView;
     private CardView serviceProviderCardView;
     private TabLayout tabLayout;
     private Toolbar toolbar;
@@ -105,31 +96,26 @@ public class ServiceDetailActivity extends AppCompatActivity {
         bookServiceButton.setOnClickListener(v -> serviceViewModel.bookService(userId, serviceId));
         toolbar.setNavigationOnClickListener(v -> finish());
 
-//        if (serviceId != -1L){
-//            ServicesApiService servicesApiService = ApiClient.getClient(this).create(ServicesApiService.class);
-//            servicesApiService.getServiceById(serviceId).enqueue(new Callback<Service>() {
-//                @Override
-//                public void onResponse(Call<Service> call, Response<Service> response) {
-//                    if (response.isSuccessful() && response.body() != null){
-//                        Service service = response.body();
-//                        if (service.getUserId() == Long.parseLong(getCurrentUserId())){
-//                            editServiceImageView.setVisibility(View.VISIBLE);
-//                        }
-//                        bindServiceDetails(service);
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<Service> call, Throwable t) {
-//                    Toast.makeText(ServiceDetailActivity.this, "Failed to load service details", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//        }
-
-        // OnClick Listeners
         serviceProviderCardView.setOnClickListener(v -> gotoOtherUserProfile());
         editServiceImageView.setOnClickListener(v -> gotoEditService());
+        deleteServiceImageView.setOnClickListener(v -> deleteService(serviceId));
     }
+
+    private void deleteService(Long serviceId) {
+        TokenManager tokenManager = new TokenManager(this);
+        String token = "Bearer " + tokenManager.getToken();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ServiceDetailActivity.this);
+        alertDialog.setTitle("Success")
+                .setMessage("Profile Updated Successfully")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    serviceViewModel.deleteService(serviceId, token);
+                    finish();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+//        finish();
+    }
+
 
     private void gotoEditService() {
         Long serviceId = getIntent().getLongExtra("serviceId", -1L);
@@ -144,8 +130,13 @@ public class ServiceDetailActivity extends AppCompatActivity {
     }
 
     private void gotoOtherUserProfile() {
-        Long userId = getIntent().getLongExtra("userId", -1L);
-        Toast.makeText(this, ""+userId, Toast.LENGTH_SHORT).show();
+        long userId = getIntent().getLongExtra("userId", -1L);
+
+        if (userId == -1L) {
+            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(this, OtherUserProfileActivity.class);
         intent.putExtra("userId", userId);
         startActivity(intent);
@@ -157,8 +148,18 @@ public class ServiceDetailActivity extends AppCompatActivity {
         usernameTextView.setText(service.getUsername());
         userRatingTextView.setText(String.valueOf(service.getUserRating()));
         categoryTextView.setText("Category: " + service.getCategory());
-        if(getCurrentUserId() != null && getCurrentUserId().equals(service.getUserId().toString()))
+        providerModeTextView.setText("Mode: "+service.getProviderMode());
+
+        if(getCurrentUserId() != null && getCurrentUserId().equals(service.getUserId().toString())){
             editServiceImageView.setVisibility(View.VISIBLE);
+            deleteServiceImageView.setVisibility(View.VISIBLE);
+            bookServiceButton.setVisibility(View.GONE);
+        }
+        if (!Boolean.TRUE.equals(service.getActive())){
+            deactivatedTagTV.setVisibility(View.VISIBLE);
+            editServiceImageView.setVisibility(View.GONE);
+            deleteServiceImageView.setVisibility(View.GONE);
+        }
         editServiceImageView.setOnClickListener(v -> startActivity(new Intent(ServiceDetailActivity.this, EditServiceActivity.class).putExtra("serviceId", service.getId())));
 
         Glide.with(userProfileImageView)
@@ -173,36 +174,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     }
 
-//    private void bookService() {
-//        Long serviceId = getIntent().getLongExtra("serviceId", -1L);
-//        Long userId = getIntent().getLongExtra("userId", -1L);
-//        Log.d("BookingRequest", "userId: " + userId + ", serviceId: " + serviceId);
-//        BookingApiService bookingApiService = ApiClient.getClient(this).create(BookingApiService.class);
-//        bookingApiService.createBooking(new BookingRequest(userId,serviceId)).enqueue(new Callback<Booking>() {
-//            @Override
-//            public void onResponse(Call<Booking> call, Response<Booking> response) {
-//                if (response.isSuccessful()) {
-//                    Toast.makeText(ServiceDetailActivity.this, "Booking Successful", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    try {
-//                        String errorBody = response.errorBody().string();
-//                        Toast.makeText(ServiceDetailActivity.this, errorBody, Toast.LENGTH_SHORT).show();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                        Toast.makeText(ServiceDetailActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Booking> call, Throwable t) {
-//                Toast.makeText(ServiceDetailActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-//                Log.d("DEBUG", "Error: " + t.getMessage());
-//                Log.e("API_BOOKING_FAILURE", "Error:", t);
-//
-//            }
-//        });
-//    }
 
     public void init(){
         titleTextView = findViewById(R.id.titleTextView);
@@ -210,12 +181,15 @@ public class ServiceDetailActivity extends AppCompatActivity {
         usernameTextView = findViewById(R.id.usernameTextView);
         userProfileImageView = findViewById(R.id.userProfileImageView);
         categoryTextView = findViewById(R.id.categoryTextView);
-        userRatingTextView = findViewById(R.id.userRatingTextView);
+        userRatingTextView = findViewById(R.id.providerRatingTextView);
         viewPager2 = findViewById(R.id.viewPagerSlider);
         bookServiceButton = findViewById(R.id.bookServiceButton);
         tabLayout = findViewById(R.id.tabLayoutDots);
         editServiceImageView = findViewById(R.id.editService);
+        deleteServiceImageView = findViewById(R.id.deleteService);
+        deactivatedTagTV = findViewById(R.id.deactivatedTagTV);
         serviceProviderCardView = findViewById(R.id.serviceProviderCardView);
+        providerModeTextView = findViewById(R.id.providerModeTextView);
         toolbar = findViewById(R.id.toolbar);
     }
     private String getCurrentUserId() {

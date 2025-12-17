@@ -7,9 +7,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Service implements Serializable {
-    public Service(){}
+    public Service() {
+    }
 
-    public Service(String category, String createdAt, String description, Long id, List<String> imageUrls, String title, Double userRating, Long userId, String username, String userProfileImageUrl) {
+    public Service(String category, String createdAt, String description, Long id, List<String> imageUrls, String title, Double userRating, Long userId, String username, String userProfileImageUrl, Boolean isActive, String providerMode) {
         this.category = category;
         this.createdAt = createdAt;
         this.description = description;
@@ -20,6 +21,8 @@ public class Service implements Serializable {
         this.userId = userId;
         this.username = username;
         this.userProfileImageUrl = userProfileImageUrl;
+        this.isActive = isActive;
+        this.providerMode = providerMode;
     }
 
     private Long id;
@@ -43,36 +46,23 @@ public class Service implements Serializable {
 
     private String userProfileImageUrl;
 
-    public String getUserProfileImageUrl() {
-        return userProfileImageUrl;
+    private Boolean isActive;
+    private String providerMode;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setUserProfileImageUrl(String userProfileImageUrl) {
-        this.userProfileImageUrl = userProfileImageUrl;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Double getUserRating() {
-        return userRating;
+    public String getTitle() {
+        return title;
     }
 
-    public void setUserRating(Double userRating) {
-        this.userRating = userRating;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -83,12 +73,12 @@ public class Service implements Serializable {
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
+    public String getCategory() {
+        return category;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<String> getImageUrls() {
@@ -97,6 +87,14 @@ public class Service implements Serializable {
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getUserId() {
@@ -115,11 +113,36 @@ public class Service implements Serializable {
         this.username = username;
     }
 
-    public String getTitle() {
-        return title;
+    public Double getUserRating() {
+        return userRating;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUserRating(Double userRating) {
+        this.userRating = userRating;
+    }
+
+    public String getUserProfileImageUrl() {
+        return userProfileImageUrl;
+    }
+
+    public void setUserProfileImageUrl(String userProfileImageUrl) {
+        this.userProfileImageUrl = userProfileImageUrl;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getProviderMode() {
+        return providerMode;
+    }
+
+    public void setProviderMode(String providerMode) {
+        this.providerMode = providerMode;
     }
 }
+

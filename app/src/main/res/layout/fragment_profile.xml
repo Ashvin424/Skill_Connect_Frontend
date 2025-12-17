@@ -4,82 +4,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#14162E"
     tools:context=".fragments.ProfileFragment">
 
-    <!-- Center Loader -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    <!-- ================= MAIN CONTENT ================= -->
 
-    <!-- SCROLL CONTENT -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/profileView"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="16dp"
             android:paddingBottom="32dp">
 
-            <!-- SETTINGS BUTTON -->
+            <!-- Settings -->
             <ImageButton
                 android:id="@+id/settingBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_gravity="end"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/icon_setting"
-                android:contentDescription="Settings" />
+                android:contentDescription="Settings"
+                app:tint="@android:color/white" />
 
-            <!-- PROFILE IMAGE -->
+            <!-- Profile Image -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userProfileImageView"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:src="@drawable/icon_profile"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/icon_profile"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#2E335F" />
 
-            <!-- NAME -->
+            <!-- Name -->
             <TextView
                 android:id="@+id/fullNameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:paddingTop="4dp" />
 
-            <!-- USERNAME -->
+            <!-- Username -->
             <TextView
                 android:id="@+id/usernameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:alpha="0.7"
+                android:textSize="14sp"
+                android:textColor="#9FA3FF"
                 android:paddingTop="2dp" />
 
-            <!-- CREATED AT -->
+            <!-- Joined date -->
             <TextView
                 android:id="@+id/userCreatedAtTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:alpha="0.6"
+                android:textSize="12sp"
+                android:textColor="#7E82C7"
                 android:paddingTop="2dp"
                 android:paddingBottom="8dp" />
 
-            <!-- STATS SECTION -->
+            <!-- ================= STATS ================= -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,14 +87,17 @@
                 android:gravity="center"
                 android:layout_marginTop="24dp">
 
-                <!-- Skills Card -->
+                <!-- Skills -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginHorizontal="6dp"
+                    app:cardBackgroundColor="#22263E"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E335F"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -107,26 +110,31 @@
                             android:id="@+id/skillCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceHeadline6" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:text="Skills"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBody2" />
+                            android:textSize="13sp"
+                            android:textColor="#9FA3FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Services Card -->
+                <!-- Services -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginHorizontal="6dp"
+                    app:cardBackgroundColor="#22263E"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E335F"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -139,29 +147,34 @@
                             android:id="@+id/serviceCountTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceHeadline6" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:text="Services"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBody2" />
+                            android:textSize="13sp"
+                            android:textColor="#9FA3FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Ratings Card -->
+                <!-- Rating -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/ratingsCardView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="6dp"
                     android:layout_weight="1"
-                    app:cardElevation="2dp"
-                    app:cardCornerRadius="12dp"
+                    android:layout_marginHorizontal="6dp"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    app:cardBackgroundColor="#22263E"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2E335F"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -171,20 +184,22 @@
                         android:padding="16dp">
 
                         <LinearLayout
-                            android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:gravity="center" >
+                            android:gravity="center">
 
                             <TextView
                                 android:id="@+id/userRatingTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceHeadline6" />
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white" />
 
                             <ImageView
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
                                 android:layout_marginStart="4dp"
                                 android:src="@drawable/icon_star"
                                 android:contentDescription="Rating" />
@@ -192,103 +207,146 @@
 
                         <TextView
                             android:id="@+id/reviewCountTextView"
-                            android:text="Ratings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBody2" />
+                            android:text="Ratings"
+                            android:textSize="13sp"
+                            android:textColor="#9FA3FF"
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
-            <!-- BOOKINGS -->
+            <!-- ================= BOOKINGS ================= -->
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/bookingsCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="28dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                app:cardBackgroundColor="#22263E"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#2E335F"
+                app:strokeWidth="1dp"
                 app:contentPadding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Bookings"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white" />
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:src="@drawable/icon_forward_arrow"
-                        app:tint="?attr/colorControlNormal"
-                        android:contentDescription="View Bookings"/>
-
+                        android:contentDescription="View Bookings"
+                        app:tint="#9FA3FF" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- BIO -->
+            <!-- ================= BIO ================= -->
+
             <TextView
-                android:text="Bio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:layout_marginTop="24dp" />
+                android:text="Bio"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="28dp" />
 
             <TextView
                 android:id="@+id/bioTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:alpha="0.7" />
+                android:textSize="14sp"
+                android:textColor="#B0B3FF"
+                android:layout_marginTop="8dp" />
 
-            <!-- SKILLS -->
+            <!-- ================= SKILLS ================= -->
+
             <TextView
-                android:text="Skills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:text="Skills"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="24dp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupSkills"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:chipSpacingHorizontal="8dp" />
-
-            <!-- SERVICES LIST -->
-            <TextView
-                android:text="Services"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginTop="8dp"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp" />
+
+            <!-- ================= SERVICES ================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Services"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="24dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewServices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:clipToPadding="false" />
 
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </ScrollView>
+    <!-- ================= LOADING ================= -->
 
-    <include layout="@layout/no_internet_layout" />
-    <include layout="@layout/empty_state_layout" />
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingAnim"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            app:lottie_rawRes="@raw/loading"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+    </FrameLayout>
+
+    <!-- ================= STATES ================= -->
+
+    <include
+        android:id="@+id/noInternetLayout"
+        layout="@layout/no_internet_layout"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/emptyStateLayout"
+        layout="@layout/empty_state_layout"
+        android:visibility="gone" />
 
 </FrameLayout>

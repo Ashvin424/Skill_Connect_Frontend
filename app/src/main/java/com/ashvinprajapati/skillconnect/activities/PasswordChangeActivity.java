@@ -16,6 +16,7 @@ import com.ashvinprajapati.skillconnect.models.ChangePasswordDTO;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -26,6 +27,7 @@ import retrofit2.Response;
 public class PasswordChangeActivity extends AppCompatActivity {
     TextInputEditText currentPasswordEditText, newPasswordEditText, confirmPasswordEditText;
     MaterialButton changePassword;
+    MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,5 +98,10 @@ public class PasswordChangeActivity extends AppCompatActivity {
         newPasswordEditText = findViewById(R.id.newPasswordEditText);
         confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
         changePassword = findViewById(R.id.changePassword);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Change Password");
+        toolbar.setNavigationOnClickListener(v -> {
+            finish();
+        });
     }
 }

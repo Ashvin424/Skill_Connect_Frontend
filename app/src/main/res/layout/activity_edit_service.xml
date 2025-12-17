@@ -1,114 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".activities.EditServiceActivity">
+
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/background"
+        app:navigationIcon="@drawable/icon_back"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Edit Your Service"
-        android:textAlignment="center"
-        android:textAppearance="@style/Toolbar.titleText" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Your Service"
+            android:textAlignment="center"
+            android:textAppearance="@style/Toolbar.titleText"
+            android:layout_marginEnd="48dp"
+            android:padding="14dp"/>
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- Content -->
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- Service Title -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="text"
+                android:hint="Service Title"
                 android:textColorHint="@color/hintTextColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/serviceTitleEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Service Title"
-                    android:padding="20dp" />
+                    android:padding="18dp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Category -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="text"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_marginTop="16dp"
+                android:hint="Set Category"
                 android:textColorHint="@color/hintTextColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/categoryTitleEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Set Category"
-                    android:padding="20dp" />
+                    android:padding="18dp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Description -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="textMultiLine"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_marginTop="16dp"
+                android:hint="Service Description"
                 android:textColorHint="@color/hintTextColor">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/serviceDescriptionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:hint="Service Description"
                     android:inputType="textMultiLine"
-                    android:lines="4"
+                    android:minLines="3"
                     android:maxLines="8"
-                    android:minLines="2"
-                    android:padding="20dp" />
+                    android:padding="18dp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-
-
+            <!-- Update Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/updateServiceBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/buttonColor"
                 android:padding="16dp"
                 android:text="Update Service"
                 android:textColor="@color/black"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                app:rippleColor="@color/hintTextColor" />
+                app:rippleColor="@color/hintTextColor"/>
         </LinearLayout>
     </ScrollView>
 

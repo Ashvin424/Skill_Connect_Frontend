@@ -4,50 +4,90 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#22263E"
+    app:strokeColor="#2E335F"
+    app:strokeWidth="1dp"
+    android:foreground="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Service Image -->
+        <!-- ================= SERVICE IMAGE ================= -->
+
         <ImageView
             android:id="@+id/imageService"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
             android:contentDescription="Service Image"
-            android:scaleType="centerCrop" />
+            android:src="@drawable/ic_empty" />
+
+        <!-- ================= CONTENT ================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="14dp">
 
             <!-- Title -->
             <TextView
                 android:id="@+id/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Service Title"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textStyle="bold" />
+                android:text="Android App Development"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
-            <!-- Posted By -->
+            <!-- Category -->
             <TextView
-                android:id="@+id/textPostedBy"
+                android:id="@+id/textCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="Development"
+                android:textSize="12sp"
+                android:textColor="#B0B3FF"
+                android:background="@drawable/bg_category_chip" />
+
+            <!-- Posted by + rating -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Posted by username"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/textPostedBy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="by ashvin_dev"
+                    android:textSize="13sp"
+                    android:textColor="#9FA3FF" />
+
+                <TextView
+                    android:id="@+id/textRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⭐ 4.5"
+                    android:textSize="13sp"
+                    android:textColor="#FFD166" />
+            </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

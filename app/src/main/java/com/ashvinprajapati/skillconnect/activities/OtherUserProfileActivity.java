@@ -74,9 +74,11 @@ public class OtherUserProfileActivity extends AppCompatActivity {
         loadProfile();
         toolbar.setNavigationOnClickListener(v -> finish());
         String[] ratings = {"1", "2", "3", "4", "5"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ratings);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ratingSpinner.setAdapter(adapter);
+        ArrayAdapter<String> ratingAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ratings);
+        ratingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ratingSpinner.setAdapter(ratingAdapter);
+
         Long revieweeId = getIntent().getLongExtra("userId", -1L);
         rateBtn.setOnClickListener(v -> rateUser(ratingSpinner.getSelectedItem().toString(), revieweeId, getCurrentUserId()));
 
@@ -121,12 +123,16 @@ public class OtherUserProfileActivity extends AppCompatActivity {
 
 
     private void loadProfile() {
-        Long currentUserId = Long.parseLong(getCurrentUserId());
         Long userId = getIntent().getLongExtra("userId", -1L);
-        if (currentUserId.equals(userId)){
+        if (userId == -1L) {
+            Toast.makeText(this, "Invalid user profile", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        Long currentUserId = Long.parseLong(getCurrentUserId());
+        if (currentUserId.equals(userId)) {
             ratingLayout.setVisibility(View.GONE);
         }
-        Toast.makeText(this, "User ID: "+userId, Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.VISIBLE);
         TokenManager tokenManager = new TokenManager(this);
         UserApiService userApiService = ApiClient.getClient(this).create(UserApiService.class);
@@ -154,6 +160,7 @@ public class OtherUserProfileActivity extends AppCompatActivity {
                     skillCountTextView.setText(String.valueOf(profileResponse.getSkillCount()));
                     serviceCountTextView.setText(String.valueOf(profileResponse.getServiceCount()));
                     reviewCountTextView.setText("("+String.valueOf(profileResponse.getReviewCount())+")");
+                    toolbar.setTitle(profileResponse.getDisplayUsername());
                     bioTextView.setText(profileResponse.getBio());
                     userRatingTextView.setText(String.valueOf(profileResponse.getAverageRating()));
                     String skills = profileResponse.getSkills();
@@ -213,7 +220,12 @@ public class OtherUserProfileActivity extends AppCompatActivity {
         rateBtn = findViewById(R.id.rateBtn);
         progressBar = findViewById(R.id.progressBar);
 
-        recyclerViewServices.setLayoutManager(new LinearLayoutManager(this));
+        //RecyclerView Setup -->
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setAutoMeasureEnabled(true);
+        recyclerViewServices.setLayoutManager(layoutManager);
+        recyclerViewServices.setHasFixedSize(false);
+        recyclerViewServices.setNestedScrollingEnabled(false);
     }
     private String getCurrentUserId() {
         SharedPreferences prefs = getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);

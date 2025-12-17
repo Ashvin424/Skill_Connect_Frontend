@@ -2,6 +2,7 @@ package com.ashvinprajapati.skillconnect.networks;
 
 import android.content.Context;
 
+import com.ashvinprajapati.skillconnect.BuildConfig;
 import com.ashvinprajapati.skillconnect.utils.MyApp;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.ashvinprajapati.skillconnect.utils.MyApp;
@@ -16,8 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static Retrofit retrofit = null;
-    private static String BASE_URL = "http://3.110.33.19:8080/";
-
+//    private static String BASE_URL = BuildConfig.BASE_URL; //AWS URL
+    private static String BASE_URL = BuildConfig.BASE_URL_LOCAL; //Local url
 
     public static Retrofit getClient(Context context) {
 

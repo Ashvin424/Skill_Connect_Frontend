@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.ashvinprajapati.skillconnect.adapters.MessageAdapter;
 import com.ashvinprajapati.skillconnect.databinding.ActivityChatBinding;
 import com.ashvinprajapati.skillconnect.models.Messages;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,6 +26,7 @@ public class ChatActivity extends AppCompatActivity {
     private ActivityChatBinding binding;
     private FirebaseFirestore db;
     private String chatId, currentUserId, otherUserId;
+    private MaterialToolbar toolbar;
 
     private List<Messages> messagesList = new ArrayList<>();
     private MessageAdapter messageAdapter;
@@ -46,7 +48,7 @@ public class ChatActivity extends AppCompatActivity {
         otherUserId = getIntent().getStringExtra("otherUserId");
         String otherUserName = getIntent().getStringExtra("otherUserName");
 
-        binding.toolbarTitleTextView.setText(otherUserName);
+        binding.toolbar.setTitle(otherUserName);
         binding.toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         // SETUP RECYCLER VIEW

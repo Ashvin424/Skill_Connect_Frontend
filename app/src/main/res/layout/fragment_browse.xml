@@ -4,18 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#14162E"
     tools:context=".fragments.BrowseFragment">
 
-    <!-- Loader -->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loadingAnim"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:lottie_rawRes="@raw/loading"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true" />
+    <!-- ================= MAIN CONTENT ================= -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +15,8 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Search Bar Card -->
+        <!-- ================= SEARCH BAR ================= -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/searchContainer"
             android:layout_width="match_parent"
@@ -31,55 +24,103 @@
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="28dp"
             app:cardElevation="0dp"
-            app:strokeColor="?attr/colorOutline"
-            app:strokeWidth="1dp">
+            app:strokeWidth="1dp"
+            app:strokeColor="#2E335F"
+            app:cardBackgroundColor="#22263E">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
 
+                <!-- Search type -->
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/searchBySpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@null" />
+                    android:background="@null"
+                    android:paddingEnd="8dp" />
 
-                <EditText
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="#3A3F6E" />
+
+                <!-- Search input -->
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/searchEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="Category, Title, Username"
+                    android:hint="Search services, skills, users"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:padding="0dp"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="#9FA3FF"
                     android:textSize="16sp" />
 
+                <!-- Search button -->
                 <ImageButton
                     android:id="@+id/searchBtn"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Search"
-                    android:padding="8dp"
-                    android:src="@drawable/icon_search" />
+                    android:src="@drawable/icon_search"
+                    app:tint="@android:color/white" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- RecyclerView -->
+        <!-- ================= SERVICES LIST ================= -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewServices"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp"
+            tools:listitem="@layout/item_service" />
 
     </LinearLayout>
 
-    <include layout="@layout/no_internet_layout" />
-    <include layout="@layout/empty_state_layout" />
+    <!-- ================= LOADING OVERLAY ================= -->
+
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingAnim"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            app:lottie_rawRes="@raw/loading"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+    </FrameLayout>
+
+    <!-- ================= EMPTY STATE ================= -->
+
+    <include
+        android:id="@+id/emptyStateLayout"
+        layout="@layout/empty_state_layout"
+        android:visibility="gone" />
+
+    <!-- ================= NO INTERNET ================= -->
+
+    <include
+        android:id="@+id/noInternetLayout"
+        layout="@layout/no_internet_layout"
+        android:visibility="gone" />
+
 </FrameLayout>

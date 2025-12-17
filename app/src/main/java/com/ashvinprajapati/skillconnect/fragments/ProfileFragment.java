@@ -17,11 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.ashvinprajapati.skillconnect.R;
 import com.ashvinprajapati.skillconnect.activities.BookingsActivity;
 import com.ashvinprajapati.skillconnect.activities.RatingsForCurrentUserActivity;
@@ -31,6 +33,7 @@ import com.ashvinprajapati.skillconnect.adapters.ProfileServiceAdapter;
 import com.ashvinprajapati.skillconnect.models.ProfileResponse;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.UserApiService;
+import com.ashvinprajapati.skillconnect.utils.Refreshable;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -44,7 +47,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements Refreshable {
 
     private TextView fullNameTextView, usernameTextView, userCreatedAtTextView, skillCountTextView, serviceCountTextView, reviewCountTextView, bioTextView, userRatingTextView;
     private CircleImageView userProfileImageView;
@@ -53,7 +56,8 @@ public class ProfileFragment extends Fragment {
     private MaterialCardView bookingCardView;
     private RecyclerView recyclerViewServices;
     private LinearLayout profileView;
-    private ProgressBar progressBar;
+    private FrameLayout loadingOverlay;
+    private LottieAnimationView loadingAnim;
     private ProfileServiceAdapter adapter;
     private View noInternetLayout;
     private Button btnRetry;
@@ -78,11 +82,17 @@ public class ProfileFragment extends Fragment {
         profileView = view.findViewById(R.id.profileView);
         bioTextView = view.findViewById(R.id.bioTextView);
         userRatingTextView = view.findViewById(R.id.userRatingTextView);
-        progressBar = view.findViewById(R.id.progressBar);
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
+        loadingAnim = view.findViewById(R.id.loadingAnim);
         noInternetLayout = view.findViewById(R.id.noInternetLayout);
         btnRetry = view.findViewById(R.id.btnRetry);
 
-        recyclerViewServices.setLayoutManager(new LinearLayoutManager(requireContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        layoutManager.setAutoMeasureEnabled(true);
+        recyclerViewServices.setLayoutManager(layoutManager);
+        recyclerViewServices.setHasFixedSize(false);
+        recyclerViewServices.setNestedScrollingEnabled(false);
 
         bookingCardView.setOnClickListener(v -> startActivity(new Intent(getActivity(), BookingsActivity.class)));
         ratingsCardView.setOnClickListener(v -> startActivity(new Intent(requireContext(), RatingsForCurrentUserActivity.class)));
@@ -170,12 +180,14 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showLoader() {
-        progressBar.setVisibility(View.VISIBLE);
+        loadingOverlay.setVisibility(View.VISIBLE);
+        loadingAnim.playAnimation();
         noInternetLayout.setVisibility(View.GONE);
     }
 
     private void hideLoader() {
-        progressBar.setVisibility(View.GONE);
+        loadingOverlay.setVisibility(View.GONE);
+        loadingAnim.pauseAnimation();
     }
 
     private void showNoInternet() {
@@ -186,5 +198,10 @@ public class ProfileFragment extends Fragment {
 
     private void showProfileUI() {
         noInternetLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRefresh() {
+        loadProfile();
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -49,4 +50,17 @@ public interface ServicesApiService {
             @Body UpdateServiceDTO serviceDTO,
             @Header("Authorization") String token
     );
+
+    @DELETE("services/{id}")
+    Call<Void> deleteService(
+            @Path("id") Long serviceId,
+            @Header("Authorization") String token
+    );
+
+    @PUT("services/{id}/deactivate")
+    Call<Void> deactivateService(
+            @Path("id") Long serviceId,
+            @Header("Authorization") String token
+    );
+
 }

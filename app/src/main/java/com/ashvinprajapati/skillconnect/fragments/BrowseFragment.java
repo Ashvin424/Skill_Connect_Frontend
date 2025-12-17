@@ -30,6 +30,7 @@ import com.ashvinprajapati.skillconnect.models.Service;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.ServicesApiService;
 import com.ashvinprajapati.skillconnect.utils.NetworkUtils;
+import com.ashvinprajapati.skillconnect.utils.Refreshable;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 
 import java.util.List;
@@ -43,7 +44,7 @@ import retrofit2.Response;
  * Use the {@link BrowseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BrowseFragment extends Fragment {
+public class BrowseFragment extends Fragment implements Refreshable {
     private RecyclerView recyclerView;
     private ServiceAdapter adapter;
     private Spinner spinner;
@@ -200,4 +201,8 @@ public class BrowseFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onRefresh() {
+        loadServices();
+    }
 }

@@ -25,6 +25,7 @@ import com.ashvinprajapati.skillconnect.models.Rating;
 import com.ashvinprajapati.skillconnect.models.RatingResponse;
 import com.ashvinprajapati.skillconnect.networks.ApiClient;
 import com.ashvinprajapati.skillconnect.networks.RatingApiService;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ import retrofit2.Response;
 public class RatingsForCurrentUserActivity extends AppCompatActivity {
     private RecyclerView ratingsRV;
     private UserRatingAdapter userRatingAdapter;
+    private MaterialToolbar toolbar;
     LinearLayout emptyStateLayout;
     private List<RatingResponse> ratingsList = new ArrayList<>();
 
@@ -53,7 +55,9 @@ public class RatingsForCurrentUserActivity extends AppCompatActivity {
         ratingsRV = findViewById(R.id.ratingsRV);
         ratingsRV.setLayoutManager(new LinearLayoutManager(this));
         userRatingAdapter = new UserRatingAdapter(ratingsList);
+        toolbar = findViewById(R.id.toolbar);
         ratingsRV.setAdapter(userRatingAdapter);
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         getRatings();
 

@@ -5,78 +5,76 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#14162E"
     tools:context=".activities.ChatActivity">
-    <androidx.appcompat.widget.Toolbar
+
+    <!-- ================= TOOLBAR ================= -->
+
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#14162E"
+        app:title="User Full Name"
+        app:titleCentered="true"
+        app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/icon_back"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/toolbarTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="User Full Name"
-            android:textAppearance="@style/Toolbar.titleText"
-            android:layout_marginEnd="48dp"/>
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:alpha="0.5"
-        android:scaleType="centerCrop"
-        android:src="@drawable/img"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+    <!-- ================= CHAT LIST ================= -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatsRecyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
         app:stackFromEnd="true"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/messageInputContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_messages" />
+
+    <!-- ================= MESSAGE INPUT ================= -->
 
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+        android:id="@+id/messageInputContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        android:fitsSystemWindows="true"
-        android:background="@android:color/transparent"
-        android:backgroundTint="@android:color/transparent"
+        android:padding="8dp"
+        android:background="#1C2040"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="8dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/msgEditText"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_weight="3"
-            android:padding="8dp"
-            android:imeOptions="actionSend"
-            android:inputType="textMultiLine"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_chat_input"
+            android:hint="Type a message"
+            android:paddingHorizontal="12dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#9FA3FF"
             android:maxLines="4"
-            android:scrollbars="vertical"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Enter Message..." />
+            android:imeOptions="actionSend"
+            android:inputType="textMultiLine" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/sendButton"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:background="@drawable/rounded_corner"
-            android:contentDescription="TODO"
-            android:src="@drawable/icon_send" />
+            android:backgroundTint="#4942CE"
+            app:cornerRadius="24dp"
+            app:icon="@drawable/icon_send"
+            app:iconTint="@android:color/white" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

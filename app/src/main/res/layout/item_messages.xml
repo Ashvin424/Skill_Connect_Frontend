@@ -1,66 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/message_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:paddingVertical="4dp"
+    android:paddingHorizontal="8dp">
 
-    <!-- Left (Received) -->
+    <!-- Message bubble -->
     <LinearLayout
-        android:id="@+id/left_message_layout"
+        android:id="@+id/messageBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/bg_message_received"
         android:layout_gravity="start"
-        android:orientation="vertical"
-        android:background="@drawable/bg_message_left"
-        android:padding="10dp"
-        android:visibility="gone">
+        android:maxWidth="280dp">
 
         <TextView
-            android:id="@+id/left_message_text"
+            android:id="@+id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello"
-            android:textColor="#000"
-            android:textSize="16sp" />
+            android:text="Hello, how are you?"
+            android:textSize="16sp"
+            android:textColor="@android:color/white" />
 
         <TextView
-            android:id="@+id/left_message_time"
+            android:id="@+id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12:00 PM"
-            android:textSize="12sp"
-            android:textColor="#888888"
-            android:layout_marginTop="4dp" />
-    </LinearLayout>
-
-    <!-- Right (Sent) -->
-    <LinearLayout
-        android:id="@+id/right_message_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:orientation="vertical"
-        android:background="@drawable/bg_message_right"
-        android:padding="10dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/right_message_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hey there!"
-            android:textColor="#fff"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/right_message_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="12:01 PM"
-            android:textSize="12sp"
-            android:textColor="#dddddd"
-            android:layout_marginTop="4dp" />
+            android:textSize="11sp"
+            android:textColor="#B0B3FF"
+            android:layout_gravity="end" />
     </LinearLayout>
-</LinearLayout>
+
+</FrameLayout>

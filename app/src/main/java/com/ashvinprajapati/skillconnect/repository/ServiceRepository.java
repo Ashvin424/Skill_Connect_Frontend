@@ -59,4 +59,26 @@ public class ServiceRepository {
         });
         return data;
     }
+
+    public LiveData<Boolean> deleteService(Long serviceId, String token) {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+
+        servicesApiService
+                .deactivateService(serviceId, token)
+                .enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        result.postValue(response.isSuccessful());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        result.postValue(false);
+                    }
+                });
+
+        return result;
+    }
+
 }

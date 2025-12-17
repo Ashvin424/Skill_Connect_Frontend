@@ -30,6 +30,7 @@ import com.ashvinprajapati.skillconnect.networks.UserApiService;
 import com.ashvinprajapati.skillconnect.utils.TokenManager;
 import com.ashvinprajapati.skillconnect.utils.UriToFileUtil;
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -48,6 +49,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputEditText fullNameEditText, usernameEditText, bioEditText, locationEditText, skillsEditText;
     private RadioGroup serviceModeRadioGroup;
     private MaterialButton updateProfileBtn;
+    private MaterialToolbar toolbar;
 
     private Uri imageUri;
     private static final int IMAGE_PICK_CODE = 1000;
@@ -207,6 +209,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         bioEditText.setText(profileResponse.getBio());
                         locationEditText.setText(profileResponse.getLocation());
                         skillsEditText.setText(profileResponse.getSkills());
+
                         Glide.with(userProfileImageView)
                                 .load(profileResponse.getProfileImageUrl())
                                 .placeholder(R.drawable.icon_profile)
@@ -233,6 +236,8 @@ public class EditProfileActivity extends AppCompatActivity {
         skillsEditText = findViewById(R.id.skillsEditText);
         serviceModeRadioGroup = findViewById(R.id.serviceModeRadioGroup);
         updateProfileBtn = findViewById(R.id.updateProfile);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private String getCurrentUserId() {

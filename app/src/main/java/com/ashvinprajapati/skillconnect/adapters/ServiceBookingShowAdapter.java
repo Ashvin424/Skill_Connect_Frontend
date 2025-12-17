@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,67 +53,119 @@ public class ServiceBookingShowAdapter extends RecyclerView.Adapter<ServiceBooki
         holder.bookingStatusTV.setText(booking.getStatus().toString());
         holder.bookedByTV.setText("Booked by "+booking.getRequestedByName());
         holder.setStatusBtn.setText(booking.getStatus().toString());
-        if (booking.getStatus() == BookingStatus.CONFIRMED){
-            holder.setStatusBtn.setEnabled(false);
+        BookingStatus status = booking.getStatus();
+
+        holder.setStatusBtn.setOnClickListener(null);
+
+        if (status.equals(BookingStatus.PENDING)) {
+
+            holder.setStatusBtn.setVisibility(View.VISIBLE);
+            holder.setStatusBtn.setText("ACTION");
+
+            holder.setStatusBtn.setOnClickListener(v -> showPendingActionsDialog(
+                    booking,
+                    holder.getAdapterPosition()
+            ));
+
+        }
+        else if (status.equals(BookingStatus.CONFIRMED)) {
+
+            holder.setStatusBtn.setVisibility(View.VISIBLE);
+            holder.setStatusBtn.setText("COMPLETE");
             holder.setStatusBtn.setTextColor(Color.parseColor("#00A300"));
-            holder.setStatusBtn.setAlpha(0.5f);
+
+            holder.setStatusBtn.setOnClickListener(v ->
+                    showCompleteConfirmation(booking, holder.getAdapterPosition())
+            );
 
         }
-        if (booking.getStatus() == BookingStatus.CANCELLED){
-            holder.setStatusBtn.setEnabled(false);
-            holder.setStatusBtn.setTextColor(Color.parseColor("#FF0000"));
-            holder.setStatusBtn.setAlpha(0.5f);
+        else {
+            holder.setStatusBtn.setVisibility(View.GONE);
         }
-        holder.setStatusBtn.setOnClickListener(v -> {
-            String[] options = {"CONFIRMED", "CANCELLED"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Update Booking Status")
-                    .setItems(options, (dialog, which) -> {
-                        String selectedStatus = options[which];
-                        updateBookingStatus(booking, selectedStatus, holder.getAdapterPosition());
-                    });
-            builder.show();
-        });
 
 
     }
 
-    private void updateBookingStatus(BookingResponse booking, String selectedStatus, int adapterPosition) {
-        BookingStatusUpdateRequest requestDto = new BookingStatusUpdateRequest(selectedStatus);
-        TokenManager tokenManager = new TokenManager(context.getApplicationContext());
+    private void showPendingActionsDialog(BookingResponse booking, int position) {
+
+        String[] options = {"CONFIRM", "CANCEL"};
+
+        new AlertDialog.Builder(context)
+                .setTitle("Booking Action")
+                .setItems(options, (dialog, which) -> {
+
+                    if (which == 0) {
+                        updateBookingStatus(booking,"CONFIRMED" ,position);
+                    } else {
+                        updateBookingStatus(booking,"CANCELLED" ,position);
+                    }
+                })
+                .show();
+    }
+
+    private void showCompleteConfirmation(BookingResponse booking, int position) {
+        new AlertDialog.Builder(context)
+                .setTitle("Complete Booking")
+                .setMessage("Are you sure the service is completed?")
+                .setPositiveButton("Yes", (d, w) ->
+                        updateBookingStatus(booking,"COMPLETED" ,position))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
+    private void updateBookingStatus(BookingResponse booking, String selectedStatus, int position) {
+
+        BookingStatusUpdateRequest requestDto =
+                new BookingStatusUpdateRequest(selectedStatus);
+
+        TokenManager tokenManager = new TokenManager(context);
         String token = "Bearer " + tokenManager.getToken();
-        BookingApiService bookingApiService = ApiClient.getClient(context).create(BookingApiService.class);
-        bookingApiService.updateBookingStatus(booking.getId(), requestDto, token).enqueue(new Callback<Booking>() {
-            @Override
-            public void onResponse(Call<Booking> call, Response<Booking> response) {
-                if (response.isSuccessful() && response.body() != null){
-                    Booking updateBooking = response.body();
-                    BookingResponse bookingResponse = new BookingResponse();
-                    bookingResponse.setId(updateBooking.getId());
-                    bookingResponse.setStatus(updateBooking.getStatus());
-                    bookingResponse.setRequestedByName(updateBooking.getRequestedBy().getName());
-                    bookingResponse.setServiceTitle(updateBooking.getService().getTitle());
-                    bookingResponse.setRequestedAt(updateBooking.getRequestedAt());
-                    bookingResponse.setConfirmedAt(updateBooking.getConfirmedAt());
-                    bookingResponse.setCancelledAt(updateBooking.getCancelledAt());
-                    bookingResponse.setUpdatedAt(updateBooking.getUpdatedAt());
-                    bookingResponse.setUserId(updateBooking.getRequestedBy().getId());
-                    bookingResponse.setServiceId(updateBooking.getService().getId());
-                    bookingResponse.setServiceProviderId(updateBooking.getService().getUserId());
 
-                    bookings.set(adapterPosition, bookingResponse);
-                    notifyItemChanged(adapterPosition);
+        BookingApiService api =
+                ApiClient.getClient(context).create(BookingApiService.class);
 
-                }
-            }
+        // 🔒 Disable button to avoid double click
+        notifyItemChanged(position);
 
-            @Override
-            public void onFailure(Call<Booking> call, Throwable t) {
+        api.updateBookingStatus(booking.getId(), requestDto, token)
+                .enqueue(new Callback<Booking>() {
 
-            }
-        });
+                    @Override
+                    public void onResponse(Call<Booking> call, Response<Booking> response) {
+
+                        if (!response.isSuccessful() || response.body() == null) {
+                            Toast.makeText(context,
+                                    "Failed to update booking status",
+                                    Toast.LENGTH_SHORT).show();
+                            notifyItemChanged(position);
+                            return;
+                        }
+
+                        BookingResponse updated =
+                                mapToBookingResponse(response.body());
+
+                        // 🔁 Find item by ID (SAFE)
+                        for (int i = 0; i < bookings.size(); i++) {
+                            if (bookings.get(i).getId().equals(updated.getId())) {
+                                bookings.set(i, updated);
+                                notifyItemChanged(i);
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Booking> call, Throwable t) {
+                        Toast.makeText(context,
+                                "Network error. Try again.",
+                                Toast.LENGTH_SHORT).show();
+                        notifyItemChanged(position);
+                    }
+                });
     }
+
 
 
     @Override
@@ -136,4 +189,21 @@ public class ServiceBookingShowAdapter extends RecyclerView.Adapter<ServiceBooki
             setStatusBtn = itemView.findViewById(R.id.setStatusBtn);
         }
     }
+
+    private BookingResponse mapToBookingResponse(Booking booking) {
+        BookingResponse br = new BookingResponse();
+        br.setId(booking.getId());
+        br.setStatus(booking.getStatus());
+        br.setRequestedByName(booking.getRequestedBy().getName());
+        br.setServiceTitle(booking.getService().getTitle());
+        br.setRequestedAt(booking.getRequestedAt());
+        br.setConfirmedAt(booking.getConfirmedAt());
+        br.setCancelledAt(booking.getCancelledAt());
+        br.setUpdatedAt(booking.getUpdatedAt());
+        br.setUserId(booking.getRequestedBy().getId());
+        br.setServiceId(booking.getService().getId());
+        br.setServiceProviderId(booking.getService().getUserId());
+        return br;
+    }
+
 }
