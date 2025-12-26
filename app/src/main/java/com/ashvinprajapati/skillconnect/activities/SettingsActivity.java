@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
                             });
 
                     // 5. Navigate to Login screen & clear back stack
-                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(SettingsActivity.this, WelcomeScreenActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();

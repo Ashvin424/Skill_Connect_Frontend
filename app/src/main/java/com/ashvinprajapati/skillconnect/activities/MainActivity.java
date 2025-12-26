@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // 🔐 Token check
         TokenManager tokenManager = new TokenManager(this);
         if (tokenManager.getToken() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, WelcomeScreenActivity.class));
             finish();
             return;
         }

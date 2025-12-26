@@ -37,7 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
     private RadioGroup serviceModeRadioGroup;
 
     // Buttons
-    private MaterialButton nextBtn, signUpBtn;
+    private MaterialButton nextBtn, signUpBtn, backBtn;
     private TextView loginTextView;
     private ProgressBar progressBar;
 
@@ -73,6 +73,10 @@ public class SignUpActivity extends AppCompatActivity {
 
         loginTextView.setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
+
+        backBtn.setOnClickListener(v-> {
             finish();
         });
     }
@@ -184,6 +188,7 @@ public class SignUpActivity extends AppCompatActivity {
         skillsEditText = findViewById(R.id.skillsEditText);
         serviceModeRadioGroup = findViewById(R.id.serviceModeRadioGroup);
 
+        backBtn = findViewById(R.id.backBtn);
         nextBtn = findViewById(R.id.nextbtn);
         signUpBtn = findViewById(R.id.signUpBtn);
         loginTextView = findViewById(R.id.loginTextView);

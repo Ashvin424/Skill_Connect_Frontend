@@ -30,7 +30,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText emailEditText, passwordEditText;
-    private MaterialButton loginBtn;
+    private MaterialButton loginBtn, backBtn;
     private TextView signUpTextView, forgotPasswordTextView;
 
     @Override
@@ -70,6 +70,9 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
             loginUser(email, password);
+        });
+        backBtn.setOnClickListener(v->{
+            finish();
         });
     }
 
@@ -128,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
         signUpTextView = findViewById(R.id.signUpTextView);
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+        backBtn = findViewById(R.id.backBtn);
     }
     private void updateFcmTokenToBackend(String userEmail) {
         FirebaseMessaging.getInstance().getToken()
