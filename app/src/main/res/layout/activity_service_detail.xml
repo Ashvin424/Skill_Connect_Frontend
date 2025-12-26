@@ -143,12 +143,15 @@
             <!-- Dots -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayoutDots"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="5dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
-                app:tabIndicatorHeight="0dp"/>
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabMaxWidth="5dp"
+                app:tabIndicatorHeight="0dp" />
 
             <!-- Provider -->
             <TextView
