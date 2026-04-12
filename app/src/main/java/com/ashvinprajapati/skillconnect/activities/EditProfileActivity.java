@@ -212,8 +212,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         Glide.with(userProfileImageView)
                                 .load(profileResponse.getProfileImageUrl())
-                                .placeholder(R.drawable.icon_profile)
-                                .error(R.drawable.icon_help)
+                                .placeholder(R.drawable.profile_img_placeholder)
+                                .error(R.drawable.profile_img_placeholder)
                                 .into(userProfileImageView);
                     }
                 }

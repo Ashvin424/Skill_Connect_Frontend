@@ -148,7 +148,13 @@ public class ServiceDetailActivity extends AppCompatActivity {
         usernameTextView.setText(service.getUsername());
         userRatingTextView.setText(String.valueOf(service.getUserRating()));
         categoryTextView.setText("Category: " + service.getCategory());
-        providerModeTextView.setText("Mode: "+service.getProviderMode());
+        if(service.getProviderMode().equals("Both")){
+            providerModeTextView.setText("Mode: Both (Online / Offline)");
+        }
+        else{
+            providerModeTextView.setText("Mode: "+service.getProviderMode());
+        }
+
 
         if(getCurrentUserId() != null && getCurrentUserId().equals(service.getUserId().toString())){
             editServiceImageView.setVisibility(View.VISIBLE);
@@ -164,8 +170,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         Glide.with(userProfileImageView)
                 .load(service.getUserProfileImageUrl())
-                .placeholder(R.drawable.icon_profile)
-                .error(R.drawable.icon_help)
+                .placeholder(R.drawable.profile_img_placeholder)
+                .error(R.drawable.profile_img_placeholder)
                 .into(userProfileImageView);
 
         ViewPagerSliderAdapter adapter = new ViewPagerSliderAdapter(service.getImageUrls());

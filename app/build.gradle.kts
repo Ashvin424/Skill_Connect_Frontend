@@ -23,7 +23,7 @@ android {
         buildConfigField(
             "String",
             "BASE_URL_LOCAL",
-            "\"http://10.251.79.140:8080/\""
+            "\"http://10.241.0.140:8080/\""
         );
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
