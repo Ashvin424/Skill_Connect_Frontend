@@ -164,16 +164,17 @@ public class OtherUserProfileActivity extends AppCompatActivity {
                     bioTextView.setText(profileResponse.getBio());
                     userRatingTextView.setText(String.valueOf(profileResponse.getAverageRating()));
                     String skills = profileResponse.getSkills();
-                    String[] skillArray = skills.split(",");
                     chipGroupSkills.removeAllViews();
-                    for (String skill : skillArray) {
-                        Chip chip = new Chip(OtherUserProfileActivity.this);
-                        chip.setText(skill.trim());
-                        chip.setChipBackgroundColorResource(R.color.teal_200);  // Optional: set background color
-                        chip.setTextColor(Color.BLACK);  // Optional: set text color
-                        chip.setClickable(false);
-                        chip.setCheckable(false);
-                        chipGroupSkills.addView(chip);
+                    if (skills != null && !skills.isEmpty()) {
+                        for (String skill : skills.split(",")) {
+                            Chip chip = new Chip(OtherUserProfileActivity.this);
+                            chip.setText(skill.trim());
+                            chip.setChipBackgroundColorResource(R.color.teal_200);
+                            chip.setTextColor(Color.BLACK);
+                            chip.setClickable(false);
+                            chip.setCheckable(false);
+                            chipGroupSkills.addView(chip);
+                        }
                     }
                     Glide.with(userProfileImageView)
                             .load(profileResponse.getProfileImageUrl())

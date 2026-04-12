@@ -135,14 +135,17 @@ public class ProfileFragment extends Fragment implements Refreshable {
                     userRatingTextView.setText(String.valueOf(profile.getAverageRating()));
 
                     chipGroupSkills.removeAllViews();
-                    for (String skill : profile.getSkills().split(",")) {
-                        Chip chip = new Chip(requireContext());
-                        chip.setText(skill.trim());
-                        chip.setChipBackgroundColorResource(R.color.teal_200);
-                        chip.setTextColor(Color.BLACK);
-                        chip.setClickable(false);
-                        chip.setCheckable(false);
-                        chipGroupSkills.addView(chip);
+                    String skills = profile.getSkills();
+                    if (skills != null && !skills.isEmpty()) {
+                        for (String skill : skills.split(",")) {
+                            Chip chip = new Chip(requireContext());
+                            chip.setText(skill.trim());
+                            chip.setChipBackgroundColorResource(R.color.teal_200);
+                            chip.setTextColor(Color.BLACK);
+                            chip.setClickable(false);
+                            chip.setCheckable(false);
+                            chipGroupSkills.addView(chip);
+                        }
                     }
 
                     Glide.with(userProfileImageView)

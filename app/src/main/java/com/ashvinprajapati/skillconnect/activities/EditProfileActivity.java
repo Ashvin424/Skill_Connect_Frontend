@@ -35,6 +35,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -88,14 +89,14 @@ public class EditProfileActivity extends AppCompatActivity {
         String token = tokenManager.getToken();
 
         if (token == null) {
-            Toast.makeText(this, "Token missing. Please login again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (imageUri != null) {
-            uploadProfileImage(updateUserDTO, tokenManager.getToken());
+            uploadProfileImage(updateUserDTO, token);
         } else {
-            updateProfile(updateUserDTO, tokenManager.getToken());
+            updateProfile(updateUserDTO);
         }
     }
     private UpdateUserDTO collectUserData() {
@@ -127,7 +128,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         UserApiService api = ApiClient.getClient(this).create(UserApiService.class);
 
-        api.uploadProfileImage(part, "Bearer " + token)
+        api.uploadProfileImage(part)
                 .enqueue(new Callback<ProfileImageUploadResponseDTO>() {
                     @Override
                     public void onResponse(Call<ProfileImageUploadResponseDTO> call,
@@ -136,7 +137,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             updateUserDTO.setProfileImageUrl(
                                     response.body().getProfileImageUrl()
                             );
-                            updateProfile(updateUserDTO, token);
+                            updateProfile(updateUserDTO);
                         } else {
                             Toast.makeText(EditProfileActivity.this,
                                     "Image upload failed", Toast.LENGTH_SHORT).show();
@@ -151,28 +152,35 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
-    private void updateProfile(UpdateUserDTO updateUserDTO, String token) {
+    private void updateProfile(UpdateUserDTO updateUserDTO) {
         UserApiService userApiService = ApiClient.getClient(this).create(UserApiService.class);
-        userApiService.userProfileUpdate(updateUserDTO, "Bearer "+token).enqueue(new Callback<User>() {
+        userApiService.userProfileUpdate(updateUserDTO).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()){
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditProfileActivity.this);
-                    alertDialog.setTitle("Success")
+                if (response.isSuccessful()) {
+                    new AlertDialog.Builder(EditProfileActivity.this)
+                            .setTitle("Success")
                             .setMessage("Profile Updated Successfully")
                             .setPositiveButton("OK", (dialog, which) -> {
                                 dialog.dismiss();
                                 finish();
                             }).show();
-                }
-                else {
-                    Toast.makeText(EditProfileActivity.this, response.errorBody().toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    String errorMessage = "Failed to update profile";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorMessage = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        Log.e("EditProfile", "Error parsing error body", e);
+                    }
+                    Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e("Error", t.getMessage());
+                Log.e("EditProfile", "Failed to update profile: " + t.getMessage());
                 Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
             }
         });

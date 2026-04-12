@@ -8,6 +8,7 @@ import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashvinprajapati.skillconnect.databinding.ActivitySplashScreenBinding;
+import com.ashvinprajapati.skillconnect.utils.TokenManager;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -23,7 +24,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         binding.loadingAnim.playAnimation();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+            TokenManager tokenManager = new TokenManager(SplashScreenActivity.this);
+            Class<?> destination = tokenManager.getToken() != null
+                    ? MainActivity.class
+                    : WelcomeScreenActivity.class;
+
+            Intent intent = new Intent(SplashScreenActivity.this, destination);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }, SPLASH_DISPLAY_LENGTH);

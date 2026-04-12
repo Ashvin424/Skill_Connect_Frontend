@@ -47,20 +47,17 @@ public interface ServicesApiService {
     @PUT("services/{id}")
     Call<UpdateServiceDTO> updateService(
             @Path("id") Long serviceId,
-            @Body UpdateServiceDTO serviceDTO,
-            @Header("Authorization") String token
+            @Body UpdateServiceDTO serviceDTO
     );
 
     @DELETE("services/{id}")
     Call<Void> deleteService(
-            @Path("id") Long serviceId,
-            @Header("Authorization") String token
+            @Path("id") Long serviceId
     );
 
     @PUT("services/{id}/deactivate")
     Call<Void> deactivateService(
-            @Path("id") Long serviceId,
-            @Header("Authorization") String token
+            @Path("id") Long serviceId
     );
 
 }

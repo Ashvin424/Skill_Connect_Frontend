@@ -129,7 +129,7 @@ public class ServiceBookingShowAdapter extends RecyclerView.Adapter<ServiceBooki
         // 🔒 Disable button to avoid double click
         notifyItemChanged(position);
 
-        api.updateBookingStatus(booking.getId(), requestDto, token)
+        api.updateBookingStatus(booking.getId(), requestDto)
                 .enqueue(new Callback<Booking>() {
 
                     @Override

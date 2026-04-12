@@ -76,6 +76,8 @@ public class ChatActivity extends AppCompatActivity {
                         return;
                     }
 
+                    if (value == null || value.isEmpty()) return;
+
                     for (DocumentChange docChange : value.getDocumentChanges()) {
                         if (docChange.getType() == DocumentChange.Type.ADDED) {
                             Messages message = docChange.getDocument().toObject(Messages.class);

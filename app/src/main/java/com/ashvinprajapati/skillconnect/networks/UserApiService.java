@@ -34,20 +34,17 @@ public interface UserApiService {
 
     @PUT("users/profile/update")
     Call<User> userProfileUpdate(
-            @Body UpdateUserDTO updateUserDTO,
-            @Header("Authorization") String token
-            );
+            @Body UpdateUserDTO updateUserDTO
+    );
 
     @Multipart
     @POST("users/profile/upload-image")
     Call<ProfileImageUploadResponseDTO> uploadProfileImage(
-            @Part MultipartBody.Part file,
-            @Header("Authorization") String token
+            @Part MultipartBody.Part file
     );
 
     @PUT("users/change-password")
     Call<ChangePasswordDTO> changePassword(
-            @Body ChangePasswordDTO changePasswordDTO,
-            @Header("Authorization") String token
+            @Body ChangePasswordDTO changePasswordDTO
     );
 }

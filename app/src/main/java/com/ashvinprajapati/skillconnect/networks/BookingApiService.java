@@ -38,14 +38,12 @@ public interface BookingApiService {
     Call<PagedResponse<BookingResponse>> getBookingsByRequester(
             @Path("userId") Long userId,
             @Query("page") int page,
-            @Query("size") int size,
-            @Header("Authorization") String token
+            @Query("size") int size
     );
 
     @PUT("bookings/{id}")
     Call<Booking> updateBookingStatus(
             @Path("id") Long bookingId,
-            @Body BookingStatusUpdateRequest request,
-            @Header("Authorization") String token
+            @Body BookingStatusUpdateRequest request
     );
 }

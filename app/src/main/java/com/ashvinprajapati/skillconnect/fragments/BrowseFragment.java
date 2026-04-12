@@ -85,7 +85,6 @@ public class BrowseFragment extends Fragment implements Refreshable {
         btnRetry = view.findViewById(R.id.btnRetry);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         btnRetry.setOnClickListener(v -> loadServices());
-        loadServices();
         String[] searchOptions = {"Search By","Title", "Category", "Username"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, searchOptions);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -99,18 +98,19 @@ public class BrowseFragment extends Fragment implements Refreshable {
 
     private void searchService() {
         String searchBy = spinner.getSelectedItem().toString().toLowerCase();
-        String query = searchEditText.getText().toString().toLowerCase();
+        String query = searchEditText.getText().toString().trim().toLowerCase();
 
         if (query.isEmpty()) {
-            Toast.makeText(requireContext().getApplicationContext(), "Please enter a search query", Toast.LENGTH_SHORT).show();
-        }
-
-        if (searchBy.equals("search by")) {
-            Toast.makeText(requireContext().getApplicationContext(), "Please select a search option", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Please enter a search query", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ServicesApiService servicesApiService = ApiClient.getClient(requireContext().getApplicationContext()).create(ServicesApiService.class);
+        if (searchBy.equals("search by")) {
+            Toast.makeText(requireContext(), "Please select a search option", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ServicesApiService servicesApiService = ApiClient.getClient(requireContext()).create(ServicesApiService.class);
         servicesApiService.searchServices(searchBy,query).enqueue(new Callback<List<Service>>() {
             @Override
             public void onResponse(Call<List<Service>> call, Response<List<Service>> response) {

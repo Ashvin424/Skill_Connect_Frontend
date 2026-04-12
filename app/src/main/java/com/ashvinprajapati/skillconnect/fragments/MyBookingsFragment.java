@@ -72,14 +72,20 @@ public class MyBookingsFragment extends Fragment {
             return;
         }
 
+        String userIdStr = getCurrentUserId();
+        if (userIdStr == null) {
+            showNoInternet();
+            return;
+        }
+
         hideAllStates();
 
-        long currentUserId = Long.parseLong(getCurrentUserId());
+        long currentUserId = Long.parseLong(userIdStr);
         TokenManager tokenManager = new TokenManager(getContext());
         String token = "Bearer " + tokenManager.getToken();
 
         BookingApiService bookingApiService = ApiClient.getClient(getContext()).create(BookingApiService.class);
-        bookingApiService.getBookingsByRequester(currentUserId,0,10, token).enqueue(new Callback<PagedResponse<BookingResponse>>() {
+        bookingApiService.getBookingsByRequester(currentUserId,0,10).enqueue(new Callback<PagedResponse<BookingResponse>>() {
             @Override
             public void onResponse(Call<PagedResponse<BookingResponse>> call, Response<PagedResponse<BookingResponse>> response) {
                 if (!isAdded()) return;
@@ -135,7 +141,8 @@ public class MyBookingsFragment extends Fragment {
     }
 
     private String getCurrentUserId() {
+        if (getContext() == null) return null;
         SharedPreferences prefs = getContext().getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);
-        return prefs.getString("currentUserId", "0");
+        return prefs.getString("currentUserId", null);
     }
 }

@@ -60,11 +60,11 @@ public class ServiceRepository {
         return data;
     }
 
-    public LiveData<Boolean> deleteService(Long serviceId, String token) {
+    public LiveData<Boolean> deleteService(Long serviceId) {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
 
         servicesApiService
-                .deactivateService(serviceId, token)
+                .deactivateService(serviceId)
                 .enqueue(new Callback<Void>() {
 
                     @Override

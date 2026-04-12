@@ -65,7 +65,12 @@ public class ServiceBookingsFragment extends Fragment {
 
     private void fetchBookings() {
 
-        long currentUserId = Long.parseLong(getCurrentUserId());
+        String userIdStr = getCurrentUserId();
+        if (userIdStr == null) {
+            showNoInternetUI();
+            return;
+        }
+        long currentUserId = Long.parseLong(userIdStr);
 
         BookingApiService bookingApiService = ApiClient.getClient(getContext()).create(BookingApiService.class);
 
@@ -101,6 +106,7 @@ public class ServiceBookingsFragment extends Fragment {
     }
 
     private String getCurrentUserId() {
+        if (getContext() == null) return null;
         SharedPreferences prefs = getContext().getSharedPreferences("SkillConnectPrefs", Context.MODE_PRIVATE);
         return prefs.getString("currentUserId", null);
     }

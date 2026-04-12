@@ -64,8 +64,13 @@ public class RatingsForCurrentUserActivity extends AppCompatActivity {
     }
 
     private void getRatings() {
-        Long currentUserId = Long.parseLong(getCurrentUserId());
-        Toast.makeText(this, "UID : " + currentUserId, Toast.LENGTH_SHORT).show();
+        String userIdStr = getCurrentUserId();
+        if (userIdStr == null) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        Long currentUserId = Long.parseLong(userIdStr);
 
         RatingApiService ratingApiService = ApiClient.getClient(this).create(RatingApiService.class);
         ratingApiService.getRatingForUser(currentUserId, 0, 10).enqueue(new Callback<PagedResponse<RatingResponse>>() {

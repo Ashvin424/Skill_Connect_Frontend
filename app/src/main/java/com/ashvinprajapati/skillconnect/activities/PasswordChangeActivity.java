@@ -45,24 +45,24 @@ public class PasswordChangeActivity extends AppCompatActivity {
             String currentPassword = currentPasswordEditText.getText().toString();
             String newPassword = newPasswordEditText.getText().toString();
             String confirmPassword = confirmPasswordEditText.getText().toString();
-            if (currentPassword.equals(newPassword)){
-                Toast.makeText(this, "New Password and Current Password cannot be same", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (!newPassword.equals(confirmPassword)){
-                Toast.makeText(this, "New Password and Confirm Password does not match", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (newPassword.length() < 8){
-                Toast.makeText(this, "New Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if(currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()){
+
+            if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (newPassword.length() < 8) {
+                Toast.makeText(this, "New Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!newPassword.equals(confirmPassword)) {
+                Toast.makeText(this, "New Password and Confirm Password does not match", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (currentPassword.equals(newPassword)) {
+                Toast.makeText(this, "New Password and Current Password cannot be same", Toast.LENGTH_SHORT).show();
+                return;
+            }
             changeNewPassword(currentPassword, newPassword);
-
         });
     }
 
@@ -70,10 +70,9 @@ public class PasswordChangeActivity extends AppCompatActivity {
         ChangePasswordDTO dto = new ChangePasswordDTO();
         dto.setCurrentPassword(currentPassword);
         dto.setNewPassword(newPassword);
-        TokenManager tokenManager = new TokenManager(this);
 
         UserApiService userApiService = ApiClient.getClient(this).create(UserApiService.class);
-        userApiService.changePassword(dto,tokenManager.getToken()).enqueue(new Callback<ChangePasswordDTO>() {
+        userApiService.changePassword(dto).enqueue(new Callback<ChangePasswordDTO>() {
             @Override
             public void onResponse(Call<ChangePasswordDTO> call, Response<ChangePasswordDTO> response) {
                 if (response.isSuccessful()){

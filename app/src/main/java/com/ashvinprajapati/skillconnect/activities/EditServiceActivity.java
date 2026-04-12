@@ -40,8 +40,13 @@ public class EditServiceActivity extends AppCompatActivity {
             return insets;
         });
         init();
-        Intent intent = getIntent();
-        Toast.makeText(this, intent.getLongExtra("userId", -1L)+" | "+intent.getLongExtra("serviceId", -1L), Toast.LENGTH_SHORT).show();
+        long serviceId = getIntent().getLongExtra("serviceId", -1L);
+        if (serviceId == -1L) {
+            Toast.makeText(this, "Invalid service. Please try again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         getExistingService();
         updateServiceBtn.setOnClickListener(v -> updateService());
     }
@@ -55,7 +60,7 @@ public class EditServiceActivity extends AppCompatActivity {
         TokenManager tokenManager = new TokenManager(this);
         UpdateServiceDTO updateServiceDTO = new UpdateServiceDTO(category, description, title);
         ServicesApiService servicesApiService = ApiClient.getClient(this).create(ServicesApiService.class);
-        servicesApiService.updateService(serviceId, updateServiceDTO, tokenManager.getToken()).enqueue(new Callback<UpdateServiceDTO>() {
+        servicesApiService.updateService(serviceId, updateServiceDTO).enqueue(new Callback<UpdateServiceDTO>() {
             @Override
             public void onResponse(Call<UpdateServiceDTO> call, Response<UpdateServiceDTO> response) {
                 if (response.isSuccessful()){
@@ -84,7 +89,6 @@ public class EditServiceActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     Service service = response.body();
                     if (service != null){
-                        Toast.makeText(EditServiceActivity.this, service.getTitle(), Toast.LENGTH_SHORT).show();
                         // Populate the EditText fields with existing service details
                         serviceTitleEditText.setText(service.getTitle());
                         categoryTitleEditText.setText(service.getCategory());

@@ -29,6 +29,7 @@ import com.ashvinprajapati.skillconnect.utils.Refreshable;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class MessageFragment extends Fragment implements Refreshable {
 
     private FirebaseFirestore db;
     private String currentUserId;
+
+    private final List<ListenerRegistration> snapshotListeners = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,16 +79,19 @@ public class MessageFragment extends Fragment implements Refreshable {
     }
 
     private void loadChats() {
-        // Internet check
         if (!NetworkUtils.isConnected(requireContext())) {
             showNoInternet();
             return;
         }
 
+        for (ListenerRegistration registration : snapshotListeners) {
+            registration.remove();
+        }
+        snapshotListeners.clear();
+
         showLoading();
         fetchChats();
     }
-
     private void fetchChats() {
         chatList.clear();
 
@@ -105,10 +111,11 @@ public class MessageFragment extends Fragment implements Refreshable {
                         String chatId = doc.getId();
                         List<String> participants = (List<String>) doc.get("participants");
 
-                        doc.getReference().collection("messages")
+                        ListenerRegistration registration = doc.getReference().collection("messages")
                                 .orderBy("timestamp", Query.Direction.DESCENDING)
                                 .limit(1)
                                 .addSnapshotListener((messageSnapshot, e) -> {
+
 
                                     if (!isAdded()) return;
 
@@ -123,6 +130,7 @@ public class MessageFragment extends Fragment implements Refreshable {
                                     Timestamp timestamp = lastMessage.getTimestamp("timestamp");
 
                                     String otherUserId = extractOtherUserId(chatId, currentUserId);
+                                    if (otherUserId == null) return;
                                     Long userId = Long.parseLong(otherUserId);
 
                                     UserApiService api = ApiClient.getClient(requireContext()).create(UserApiService.class);
@@ -156,6 +164,7 @@ public class MessageFragment extends Fragment implements Refreshable {
                                         public void onFailure(Call<ProfileResponse> call, Throwable t) {}
                                     });
                                 });
+                        snapshotListeners.add(registration);
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -170,7 +179,9 @@ public class MessageFragment extends Fragment implements Refreshable {
     }
 
     private String extractOtherUserId(String chatId, String currentUserId) {
+        if (chatId == null || currentUserId == null) return null;
         String[] ids = chatId.split("_");
+        if (ids.length < 2) return null;
         return ids[0].equals(currentUserId) ? ids[1] : ids[0];
     }
 
@@ -214,5 +225,14 @@ public class MessageFragment extends Fragment implements Refreshable {
     @Override
     public void onRefresh() {
         loadChats();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for (ListenerRegistration registration : snapshotListeners) {
+            registration.remove();
+        }
+        snapshotListeners.clear();
     }
 }

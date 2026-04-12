@@ -45,6 +45,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
         holder.usernameTextView.setText(chat.getDisplayName());
         String currentUserId = getCurrentUserId();
         String otherUserId = extractOtherUserId(chat.getChatId(), currentUserId);
+        if (otherUserId == null) return;
         if (chat.getTimestamp() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             String time = sdf.format(chat.getTimestamp().toDate());
@@ -70,7 +71,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
     }
 
     private String extractOtherUserId(String chatId, String currentUserId) {
+        if (chatId == null || currentUserId == null) return null;
         String[] ids = chatId.split("_");
+        if (ids.length < 2) return null;
         return ids[0].equals(currentUserId) ? ids[1] : ids[0];
     }
 

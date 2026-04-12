@@ -59,8 +59,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
         });
         init();
         Long serviceId = getIntent().getLongExtra("serviceId", -1L);
-        Long userId = getIntent().getLongExtra("userId", -1L);
-
         // Set up View Model
         ServicesApiService servicesApiService = ApiClient.getClient(this).create(ServicesApiService.class);
         BookingApiService bookingApiService = ApiClient.getClient(this).create(BookingApiService.class);
@@ -93,7 +91,15 @@ public class ServiceDetailActivity extends AppCompatActivity {
         }
 
         // Click Listeners
-        bookServiceButton.setOnClickListener(v -> serviceViewModel.bookService(userId, serviceId));
+        bookServiceButton.setOnClickListener(v -> {
+            String currentUserIdStr = getCurrentUserId();
+            if (currentUserIdStr == null) {
+                Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Long currentUserId = Long.parseLong(currentUserIdStr);
+            serviceViewModel.bookService(currentUserId, serviceId);
+        });
         toolbar.setNavigationOnClickListener(v -> finish());
 
         serviceProviderCardView.setOnClickListener(v -> gotoOtherUserProfile());
@@ -103,29 +109,34 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
     private void deleteService(Long serviceId) {
         TokenManager tokenManager = new TokenManager(this);
-        String token = "Bearer " + tokenManager.getToken();
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ServiceDetailActivity.this);
-        alertDialog.setTitle("Success")
-                .setMessage("Profile Updated Successfully")
-                .setPositiveButton("OK", (dialog, which) -> {
-                    serviceViewModel.deleteService(serviceId, token);
+        String token = tokenManager.getToken();
+
+        if (token == null) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(ServiceDetailActivity.this)
+                .setTitle("Delete Service")
+                .setMessage("Are you sure you want to delete this service? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    serviceViewModel.deleteService(serviceId);
                     finish();
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .show();
-//        finish();
     }
 
 
     private void gotoEditService() {
         Long serviceId = getIntent().getLongExtra("serviceId", -1L);
-        Toast.makeText(this, ""+serviceId, Toast.LENGTH_SHORT).show();
-        Long userId = Long.parseLong(getCurrentUserId());
-
+        if (serviceId == -1L) {
+            Toast.makeText(this, "Invalid service", Toast.LENGTH_SHORT).show();
+            return;
+        }
         startActivity(
-                new Intent(ServiceDetailActivity.this, EditProfileActivity.class)
-                        .putExtra("serviceId",serviceId)
-                        .putExtra("userId", userId)
+                new Intent(ServiceDetailActivity.this, EditServiceActivity.class)
+                        .putExtra("serviceId", serviceId)
         );
     }
 
