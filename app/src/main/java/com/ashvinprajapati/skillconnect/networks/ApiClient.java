@@ -28,7 +28,7 @@ public class ApiClient {
         }
 
         // Always use production URL — switch to BASE_URL_LOCAL only during development
-        String baseUrl = BuildConfig.BASE_URL_LOCAL;
+        String baseUrl = BuildConfig.BASE_URL;
 
         // Rebuild if URL has changed or not yet built
         if (retrofit == null || !baseUrl.equals(currentBaseUrl)) {

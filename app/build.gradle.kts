@@ -18,7 +18,7 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"http://3.110.33.19:8080/\""
+            "\"https://skill-connect-backend.onrender.com\""
         );
         buildConfigField(
             "String",

@@ -83,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
                             Messages message = docChange.getDocument().toObject(Messages.class);
                             messagesList.add(message);
                             messageAdapter.notifyItemInserted(messagesList.size() - 1);
-                            binding.chatsRecyclerView.scrollToPosition(messagesList.size() - 1);
+                            binding.chatsRecyclerView.scrollToPosition(messagesList.size() -1);
                         }
                     }
                 });
