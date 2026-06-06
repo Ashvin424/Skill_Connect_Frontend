@@ -2,6 +2,8 @@
 
 SkillConnect is an open-source full-stack service marketplace app built with Android and Spring Boot.
 
+Backend Repo : https://github.com/Ashvin424/skill_connect_backend
+
 ## Features
 - User authentication (JWT)
 - Service posting & browsing
